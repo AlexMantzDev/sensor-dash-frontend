@@ -1,0 +1,17 @@
+<div class="relative p-8 flex flex-col items-center">
+  @if(this.formState === 0) {
+  <h2>Register</h2>
+  } @else {
+  <h2>Login</h2>
+  }
+  <mat-dialog-content>
+    @if(this.formState === 0) {
+    <app-sign-up></app-sign-up>
+    } @else {
+    <app-login></app-login>
+    }
+  </mat-dialog-content>
+  <button mat-icon-button color="warn" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

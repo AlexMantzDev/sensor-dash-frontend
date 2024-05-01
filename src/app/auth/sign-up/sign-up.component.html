@@ -1,0 +1,36 @@
+<div class="relative p-8 flex flex-col items-center">
+  <form
+    [formGroup]="signup"
+    (ngSubmit)="onRegister()"
+    class="flex flex-col items-center"
+  >
+    <mat-form-field>
+      <input matInput placeholder="Email" formControlName="email" />
+    </mat-form-field>
+    <br />
+    <mat-form-field>
+      <input
+        matInput
+        type="password"
+        placeholder="Password"
+        formControlName="password"
+      />
+    </mat-form-field>
+    <br />
+    <mat-form-field>
+      <input
+        matInput
+        type="password"
+        placeholder="Password"
+        formControlName="confirmPassword"
+      />
+    </mat-form-field>
+    <br />
+    <div class="w-full flex flex-row justify-evenly">
+      <button mat-raised-button color="primary" type="submit">Register</button>
+      <button mat-raised-button color="primary" type="button" (click)="login()">
+        Login
+      </button>
+    </div>
+  </form>
+</div>
