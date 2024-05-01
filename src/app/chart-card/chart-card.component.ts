@@ -1,7 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import 'chartjs-adapter-moment';
+import moment from 'moment-timezone';
+import { Chart } from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import { SensorDataService } from '../shared/services/sensor-data.service';
+
+Chart.register(annotationPlugin);
+moment.tz.setDefault('America/Chicago');
 
 @Component({
   selector: 'app-chart-card',
@@ -10,26 +18,16 @@ import { BaseChartDirective } from 'ng2-charts';
   templateUrl: './chart-card.component.html',
   styleUrl: './chart-card.component.css',
 })
-export class ChartCardComponent {
-  public lineGraphPlugins = [];
+export class ChartCardComponent implements OnInit {
+  private localeData: { time: string; temperature: number }[] = [];
+
   public lineGraphData: ChartConfiguration<
     'line',
     { time: string; temperature: number }[]
   >['data'] = {
     datasets: [
       {
-        data: [
-          { time: '08:00', temperature: 66 },
-          { time: '09:00', temperature: 67 },
-          { time: '10:00', temperature: 68 },
-          { time: '11:00', temperature: 69 },
-          { time: '12:00', temperature: 70 },
-          { time: '13:00', temperature: 71 },
-          { time: '14:00', temperature: 72 },
-          { time: '15:00', temperature: 73 },
-          { time: '16:00', temperature: 74 },
-          { time: '17:00', temperature: 75 },
-        ],
+        data: this.localeData,
         parsing: {
           xAxisKey: 'time',
           yAxisKey: 'temperature',
@@ -43,20 +41,35 @@ export class ChartCardComponent {
       legend: {
         display: false,
       },
+      annotation: {
+        annotations: [
+          {
+            type: 'line',
+            borderColor: 'rgba(255, 99, 132, 0.5)',
+            borderWidth: 2,
+            scaleID: 'x',
+            value: '2024-05-01T00:00:00-05:00',
+          },
+        ],
+      },
     },
     responsive: false,
     scales: {
       x: {
-        display: true,
+        type: 'time',
+        time: {
+          parser: 'YYYY-MM-DDTHH:mm:ssZ',
+          tooltipFormat: 'll HH:mm',
+          unit: 'hour',
+        },
         title: {
           display: true,
           text: 'Time',
         },
       },
       y: {
-        suggestedMax: 120,
-        suggestedMin: 30,
-        display: true,
+        max: 120,
+        min: 30,
         title: {
           display: true,
           text: 'Temperature in F',
@@ -65,5 +78,23 @@ export class ChartCardComponent {
     },
   };
 
-  constructor() {}
+  constructor(private sensorDataService: SensorDataService) {}
+
+  ngOnInit() {
+    const newData = this.convertDataToLocale(this.sensorDataService.data);
+    this.localeData = [...newData];
+    this.lineGraphData.datasets[0].data = this.localeData;
+    console.log(this.localeData);
+  }
+
+  convertDataToLocale(
+    data: { time: string; temperature: number }[]
+  ): { time: string; temperature: number }[] {
+    return data.map((item) => {
+      return {
+        ...item,
+        time: moment(Number(item.time) * 1000).format(),
+      };
+    });
+  }
 }

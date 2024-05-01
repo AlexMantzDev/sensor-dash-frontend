@@ -1,1 +1,11 @@
-<p>verify works!</p>
+<div class="dark:bg-zinc-800 dark:text-zinc-100 w-full">
+  <div class="w-3/4 p-8 flex flex-col items-center m-auto">
+    @if(this.isSuccess === true) {
+    <p>Account verified <span class="text-green-300">successfully!</span></p>
+    <p>{{ this.msg }}</p>
+    } @else {
+    <p>Account verification <span class="text-red-300">failed!</span></p>
+    <p>{{ this.msg }}</p>
+    }
+  </div>
+</div>
