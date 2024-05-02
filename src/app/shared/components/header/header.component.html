@@ -1,13 +1,36 @@
-<header class="flex h-full bg-indigo-500">
-  <div class="w-32 grid">
-    <div class="place-self-center">LOGO</div>
-  </div>
-  <div class="w-auto ml-auto grid">
-    <div class="place-self-center">{{ this.currentUser?.email }}</div>
-  </div>
-  <div class="w-16 grid">
-    <button mat-icon-button class="place-self-center">
-      <mat-icon>menu</mat-icon>
-    </button>
-  </div>
+<header>
+  <nav class="flex h-16 bg-indigo-500">
+    <div class="w-32 grid">
+      <div class="place-self-center">LOGO</div>
+    </div>
+    <div class="w-auto ml-auto grid">
+      @if(this.isLoggedIn){
+      <div class="place-self-center">
+        <button mat-button (click)="openPrompt()">
+          {{ this.currentUser?.email }}
+        </button>
+      </div>
+      } @else {
+      <div
+        class="place-self-center"
+        [routerLink]="['/login']"
+        routerLinkActive="router-link-active"
+      >
+        <button mat-button>Login</button>
+      </div>
+      }
+    </div>
+    <div class="w-16 grid">
+      <button mat-icon-button class="place-self-center" (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+  </nav>
+  <menu class="z-10 bg-zinc-700 text-zinc-100">
+    <ul class="flex flex-row">
+      <li class="p-2 ml-4">Home</li>
+      <li class="p-2 ml-4">About</li>
+      <li class="p-2 ml-4">Contact</li>
+    </ul>
+  </menu>
 </header>

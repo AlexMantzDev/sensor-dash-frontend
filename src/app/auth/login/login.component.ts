@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { AuthService } from '../../shared/services/auth.service';
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -24,7 +26,11 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
   private authSubscription: any = new Subscription();
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loginForm = new FormGroup({
@@ -42,10 +48,12 @@ export class LoginComponent implements OnInit {
         .login(formValue.email, formValue.password)
         .subscribe((res) => {
           const user = res.data.user;
-          console.log(user);
+          if (user) {
+            this.authService.currentUserSubject.next(user);
+            console.log(this.authService.currentUserValue);
+          }
         })
     );
+    this.router.navigate(['/dashboard'], { relativeTo: this.route });
   }
-
-  toRegister() {}
 }

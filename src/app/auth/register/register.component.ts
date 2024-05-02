@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 
@@ -17,6 +17,7 @@ import { AuthService } from '../../shared/services/auth.service';
     MatInput,
     MatButtonModule,
     MatIconModule,
+    RouterLink,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
@@ -43,10 +44,6 @@ export class RegisterComponent implements OnInit {
     this.authSubscription.unsubscribe();
   }
 
-  toLogin() {
-    this.router.navigate(['login'], { relativeTo: this.route });
-  }
-
   onSubmit() {
     if (this.registerForm.invalid) return;
     const formValue = this.registerForm.getRawValue();
@@ -60,7 +57,7 @@ export class RegisterComponent implements OnInit {
       this.authService
         .register(formValue.email, formValue.password)
         .subscribe((res) => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login', { relativeTo: this.route }]);
         })
     );
   }

@@ -6,10 +6,16 @@ import { Device } from '../models/Device.model';
 @Injectable({
   providedIn: 'root',
 })
-export class DeviceServiceService {
+export class DeviceService {
   private baseUrl = 'http://localhost:3000/api/v1/devices';
-  private devicesSubject = new BehaviorSubject<Device[] | undefined>(undefined);
-  deviceList = this.devicesSubject.asObservable();
+
+  private devices: Device[] = [
+    { _id: '123123', ownerId: '123123' },
+    { _id: '234234', ownerId: '234234' },
+  ];
+
+  public devicesSubject = new BehaviorSubject<Device[] | null>(this.devices);
+  public devicesList = this.devicesSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 

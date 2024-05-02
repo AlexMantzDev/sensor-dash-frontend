@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -19,7 +19,9 @@ moment.tz.setDefault('America/Chicago');
   styleUrl: './chart-card.component.css',
 })
 export class ChartCardComponent implements OnInit {
-  private localeData: { time: string; temperature: number }[] = [];
+  @Input() device = {};
+
+  private localizedData: { time: string; temperature: number }[] = [];
 
   public lineGraphData: ChartConfiguration<
     'line',
@@ -27,7 +29,7 @@ export class ChartCardComponent implements OnInit {
   >['data'] = {
     datasets: [
       {
-        data: this.localeData,
+        data: this.localizedData,
         parsing: {
           xAxisKey: 'time',
           yAxisKey: 'temperature',
@@ -82,8 +84,8 @@ export class ChartCardComponent implements OnInit {
 
   ngOnInit() {
     const newData = this.convertDataToLocale(this.sensorDataService.data);
-    this.localeData = [...newData];
-    this.lineGraphData.datasets[0].data = this.localeData;
+    this.localizedData = [...newData];
+    this.lineGraphData.datasets[0].data = this.localizedData;
   }
 
   convertDataToLocale(

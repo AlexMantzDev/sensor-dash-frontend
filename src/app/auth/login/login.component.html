@@ -25,7 +25,17 @@
       </button>
       <p>
         Don't have an account? Register
-        <a href="#" (click)="toRegister()">here</a>
+        <a [routerLink]="['/register']" routerLinkActive="router-link-active"
+          >here</a
+        >
+      </p>
+      <p>
+        Forgot password?
+        <a
+          [routerLink]="['/forgot-password']"
+          routerLinkActive="router-link-active"
+          >Reset</a
+        >
       </p>
     </form>
   </div>

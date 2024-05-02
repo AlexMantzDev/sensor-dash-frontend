@@ -1,12 +1,20 @@
 <div class="flex min-h-full w-full">
-  <aside class="dark:bg-zinc-700 dark:text-zinc-100 w-96"></aside>
+  <aside class="dark:bg-zinc-700 dark:text-zinc-100 w-96">
+    <button mat-icon-button (click)="toggleAside()">
+      @if(this.isAsideOpen){
+      <mat-icon>chevron-right</mat-icon>
+      } @else {
+      <mat-icon>chevron-left</mat-icon>
+      }
+    </button>
+  </aside>
   <main class="dark:bg-zinc-800 dark:text-zinc-100 flex-1">
     <div class="m-4">
       <h2>Sensors</h2>
     </div>
     <section class="text-black">
-      @for (device of devices; track $index) {
-      <app-chart-card></app-chart-card>
+      @for (device of this.devices; track $index) {
+      <app-chart-card [device]="device"></app-chart-card>
       }
     </section>
   </main>

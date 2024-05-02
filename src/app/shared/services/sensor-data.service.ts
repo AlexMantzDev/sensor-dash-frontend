@@ -31,8 +31,8 @@ export class SensorDataService {
 
   constructor(private http: HttpClient) {}
 
-  loadTemperature() {
-    this.http.get<SensorData[]>(this.baseUrl);
+  loadTemperature(deviceId: string) {
+    this.http.get<SensorData[]>(this.baseUrl, { params: { deviceId } });
   }
 
   loadHumidity() {}

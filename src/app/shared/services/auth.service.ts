@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
 
 import { User } from '../models/User.model';
 
@@ -9,7 +9,7 @@ import { User } from '../models/User.model';
 })
 export class AuthService {
   private backendUrlString = 'http://localhost:3000';
-  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser = this.currentUserSubject.asObservable();
   public isAuthenticated = false;
 
@@ -64,11 +64,41 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(
+      `${this.backendUrlString}/api/v1/auth/forgot-password`,
+      {
+        email,
+      },
+      { withCredentials: true }
+    );
+  }
+
+  resetPassword(
+    email: string,
+    token: string,
+    password: string
+  ): Observable<any> {
+    return this.http.post(
+      `${this.backendUrlString}/api/v1/auth/reset-password`,
+      {
+        password,
+        passwordToken: token,
+        email,
+      },
+      { withCredentials: true }
+    );
+  }
+
   verifyEmail(email: string, token: string): Observable<any> {
-    return this.http.post(`${this.backendUrlString}/api/v1/auth/verify`, {
-      email,
-      verificationToken: token,
-    });
+    return this.http.post(
+      `${this.backendUrlString}/api/v1/auth/verify`,
+      {
+        email,
+        verificationToken: token,
+      },
+      { withCredentials: true }
+    );
   }
 
   logout(): Observable<any> {
