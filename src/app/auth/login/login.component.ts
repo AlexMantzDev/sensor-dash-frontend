@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Subscription } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -24,7 +23,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
-  private authSubscription: any = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -43,17 +41,14 @@ export class LoginComponent implements OnInit {
     if (!this.loginForm.valid) return;
     const formValue = this.loginForm.getRawValue();
     if (!formValue.email || !formValue.password) return;
-    this.authSubscription.add(
-      this.authService
-        .login(formValue.email, formValue.password)
-        .subscribe((res) => {
-          const user = res.data.user;
-          if (user) {
-            this.authService.currentUserSubject.next(user);
-            console.log(this.authService.currentUserValue);
-          }
-        })
-    );
-    this.router.navigate(['/dashboard'], { relativeTo: this.route });
+    this.authService
+      .login(formValue.email, formValue.password)
+      .subscribe((res) => {
+        const user = res.data.user;
+        if (user) {
+          this.authService.currentUserSubject.next(user);
+          this.router.navigate(['/dashboard'], { relativeTo: this.route });
+        }
+      });
   }
 }
