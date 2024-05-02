@@ -84,7 +84,6 @@ export class ChartCardComponent implements OnInit {
     const newData = this.convertDataToLocale(this.sensorDataService.data);
     this.localeData = [...newData];
     this.lineGraphData.datasets[0].data = this.localeData;
-    console.log(this.localeData);
   }
 
   convertDataToLocale(

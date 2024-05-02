@@ -11,6 +11,7 @@ export class AuthService {
   private backendUrlString = 'http://localhost:3000';
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser = this.currentUserSubject.asObservable();
+  public isAuthenticated = false;
 
   constructor(private http: HttpClient) {}
 
@@ -18,21 +19,21 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  isAuthenticated() {
+  authenticate() {
     return this.http
-      .post(`${this.backendUrlString}/api/v1/auth/me`, {
+      .get(`${this.backendUrlString}/api/v1/auth/me`, {
         withCredentials: true,
       })
       .pipe(
         map((res) => {
           const user = res['data']['user'];
-          const isLoggedIn = !!user;
-          if (isLoggedIn) {
+          this.isAuthenticated = true;
+          if (this.isAuthenticated) {
             this.currentUserSubject.next(user);
           } else {
             this.currentUserSubject.next(null);
           }
-          return isLoggedIn;
+          return this.isAuthenticated;
         }),
         catchError(() => {
           this.currentUserSubject.next(null);
@@ -61,16 +62,6 @@ export class AuthService {
       },
       { withCredentials: true }
     );
-  }
-
-  signOut() {
-    this.http.post('http://localhost:3000/api/v1/auth/signout', {});
-  }
-
-  me(): Observable<any> {
-    return this.http.get(`${this.backendUrlString}/api/v1/auth/me`, {
-      withCredentials: true,
-    });
   }
 
   verifyEmail(email: string, token: string): Observable<any> {

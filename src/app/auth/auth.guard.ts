@@ -6,7 +6,7 @@ import { catchError, map, of } from 'rxjs';
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  return authService.isAuthenticated().pipe(
+  return authService.authenticate().pipe(
     map((isAuthenticated) => {
       if (isAuthenticated) {
         return true;

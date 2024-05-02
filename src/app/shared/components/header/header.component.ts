@@ -14,18 +14,17 @@ import { Subscription } from 'rxjs';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
-  public currentUser;
-  isAuthenticated: boolean = false;
+  public currentUser = { email: '' };
+  private userSubscription: Subscription;
   constructor(public dialog: MatDialog, private authService: AuthService) {}
 
   ngOnInit() {
-    this.authService.currentUser.subscribe((user) => {
+    this.userSubscription = this.authService.currentUser.subscribe((user) => {
       this.currentUser = user;
-      this.isAuthenticated = !!user;
     });
   }
 
   ngOnDestroy() {
-    this.currentUser.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 }
