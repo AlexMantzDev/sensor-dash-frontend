@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-forgot-password',
@@ -26,7 +27,8 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css',
 })
-export class ForgotPasswordComponent {
+export class ForgotPasswordComponent implements OnInit, OnDestroy {
+  public forgotPassSubsription: Subscription;
   public sendResetForm: FormGroup;
   constructor(
     private router: Router,
@@ -43,10 +45,16 @@ export class ForgotPasswordComponent {
   onSubmit() {
     const formValue = this.sendResetForm.getRawValue();
     const email = formValue.email;
-    this.authService.forgotPassword(email).subscribe((res) => {
-      if (res) {
+    this.forgotPassSubsription = this.authService
+      .forgotPassword(email)
+      .subscribe(() => {
         this.router.navigate(['/reset-sent', { relativeTo: this.route }]);
-      }
-    });
+      });
+  }
+
+  ngOnDestroy() {
+    if (this.forgotPassSubsription) {
+      this.forgotPassSubsription.unsubscribe();
+    }
   }
 }

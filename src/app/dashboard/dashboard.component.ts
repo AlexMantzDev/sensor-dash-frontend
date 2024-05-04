@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChartCardComponent } from '../chart-card/chart-card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { DeviceService } from '../shared/services/device.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,13 +11,22 @@ import { DeviceService } from '../shared/services/device.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, OnDestroy {
   public isAsideOpen = true;
   public devices = [];
+  private devicesListSubscription: Subscription;
 
-  public devicesListSubscription = this.deviceService.devicesList.subscribe(
-    (devices) => [(this.devices = devices)]
-  );
+  ngOnInit() {
+    this.devicesListSubscription = this.deviceService.devicesList.subscribe(
+      (devices) => [(this.devices = devices)]
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.devicesListSubscription) {
+      this.devicesListSubscription.unsubscribe();
+    }
+  }
 
   constructor(public deviceService: DeviceService) {}
 

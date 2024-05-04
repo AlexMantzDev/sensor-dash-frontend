@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -28,7 +28,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './change-pass.component.html',
   styleUrl: './change-pass.component.css',
 })
-export class ChangePassComponent {
+export class ChangePassComponent implements OnInit, OnDestroy {
   public currentUserSubscription: Subscription;
   public changePassForm: FormGroup;
   private email: string;
@@ -42,9 +42,7 @@ export class ChangePassComponent {
   ngOnInit() {
     this.currentUserSubscription = this.authService.currentUser.subscribe(
       (user) => {
-        if (user) {
-          this.email = user.email;
-        }
+        this.email = user.email;
       }
     );
     this.changePassForm = new FormGroup(
@@ -60,7 +58,7 @@ export class ChangePassComponent {
     );
   }
 
-  ngOnDestory() {
+  ngOnDestroy() {
     this.currentUserSubscription.unsubscribe();
   }
 

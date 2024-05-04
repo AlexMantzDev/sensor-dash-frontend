@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../shared/services/auth.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -26,8 +27,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   public loginForm: FormGroup;
+  private loginSubcription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -46,7 +48,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) return;
     const formValue = this.loginForm.getRawValue();
     if (!formValue.email || !formValue.password) return;
-    this.authService
+    this.loginSubcription = this.authService
       .login(formValue.email, formValue.password)
       .subscribe((res) => {
         const user = res.data.user;
@@ -58,7 +60,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.authService.currentUserSubject.unsubscribe();
+    if (this.loginSubcription) {
+      this.loginSubcription.unsubscribe();
+    }
   }
 
   togglePassword(input: HTMLInputElement) {

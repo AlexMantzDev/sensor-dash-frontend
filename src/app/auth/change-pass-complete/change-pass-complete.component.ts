@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-change-pass-complete',
@@ -9,16 +10,21 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './change-pass-complete.component.html',
   styleUrl: './change-pass-complete.component.css',
 })
-export class ChangePassCompleteComponent implements OnInit {
+export class ChangePassCompleteComponent implements OnInit, OnDestroy {
+  private routeSubscription: Subscription;
   public status: string;
   public msg: string;
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.params.subscribe((params) => {
+    this.routeSubscription = this.route.params.subscribe((params) => {
       this.status = params['status'];
     });
+  }
+
+  ngOnDestroy() {
+    this.routeSubscription.unsubscribe();
   }
 
   onClick() {

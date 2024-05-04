@@ -3,17 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
 
 import { User } from '../models/User.model';
+import { Env } from '../env/env';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private backendUrlString = 'http://localhost:3000';
+  private baseUrl = this.env.baseUrl;
   public currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser = this.currentUserSubject.asObservable();
   public isAuthenticated = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private env: Env) {}
 
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
@@ -21,7 +22,7 @@ export class AuthService {
 
   authenticate() {
     return this.http
-      .get(`${this.backendUrlString}/api/v1/auth/me`, {
+      .get(`${this.baseUrl}/api/v1/auth/me`, {
         withCredentials: true,
       })
       .pipe(
@@ -44,7 +45,7 @@ export class AuthService {
 
   register(email: string, password: string) {
     return this.http.post(
-      `${this.backendUrlString}/api/v1/auth/register`,
+      `${this.baseUrl}/api/v1/auth/register`,
       {
         email,
         password,
@@ -55,7 +56,7 @@ export class AuthService {
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(
-      `${this.backendUrlString}/api/v1/auth/login`,
+      `${this.baseUrl}/api/v1/auth/login`,
       {
         email,
         password,
@@ -66,7 +67,7 @@ export class AuthService {
 
   forgotPassword(email: string): Observable<any> {
     return this.http.post(
-      `${this.backendUrlString}/api/v1/auth/forgot-password`,
+      `${this.baseUrl}/api/v1/auth/forgot-password`,
       {
         email,
       },
@@ -80,7 +81,7 @@ export class AuthService {
     password: string
   ): Observable<any> {
     return this.http.post(
-      `${this.backendUrlString}/api/v1/auth/reset-password`,
+      `${this.baseUrl}/api/v1/auth/reset-password`,
       {
         password,
         passwordToken: token,
@@ -92,7 +93,7 @@ export class AuthService {
 
   verifyEmail(email: string, token: string): Observable<any> {
     return this.http.post(
-      `${this.backendUrlString}/api/v1/auth/verify`,
+      `${this.baseUrl}/api/v1/auth/verify`,
       {
         email,
         verificationToken: token,
@@ -107,7 +108,7 @@ export class AuthService {
     newPassword: string
   ): Observable<any> {
     return this.http.post(
-      `${this.backendUrlString}/api/v1/auth/change-password`,
+      `${this.baseUrl}/api/v1/auth/change-password`,
       {
         email,
         oldPassword,
@@ -118,7 +119,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.delete(`${this.backendUrlString}/api/v1/auth/logout`, {
+    return this.http.delete(`${this.baseUrl}/api/v1/auth/logout`, {
       withCredentials: true,
     });
   }

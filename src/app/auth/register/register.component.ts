@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
   viewChild,
@@ -18,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -33,8 +35,9 @@ import { AuthService } from '../../shared/services/auth.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   public registerForm: FormGroup = new FormGroup({});
+  private registerSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -56,6 +59,12 @@ export class RegisterComponent implements OnInit {
     );
   }
 
+  ngOnDestroy() {
+    if (this.registerSubscription) {
+      this.registerSubscription.unsubscribe();
+    }
+  }
+
   passwordMatchValidator(control: AbstractControl) {
     return control.get('password').value ===
       control.get('confirmPassword').value
@@ -71,7 +80,7 @@ export class RegisterComponent implements OnInit {
     if (formValue.password !== formValue.confirmPassword) {
       return;
     }
-    this.authService
+    this.registerSubscription = this.authService
       .register(formValue.email, formValue.password)
       .subscribe(() => {
         this.router.navigate(['/validation-sent', { relativeTo: this.route }]);

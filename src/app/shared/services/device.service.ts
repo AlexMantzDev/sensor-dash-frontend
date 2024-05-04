@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Device } from '../models/Device.model';
+import { Env } from '../env/env';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeviceService {
-  private baseUrl = 'http://localhost:3000/api/v1/devices';
+  private baseUrl = this.env.baseUrl;
 
   private devices: Device[] = [
     { _id: '123123', ownerId: '123123' },
@@ -17,7 +18,7 @@ export class DeviceService {
   public devicesSubject = new BehaviorSubject<Device[] | null>(this.devices);
   public devicesList = this.devicesSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private env: Env) {}
 
   loadDevices() {
     this.http.get<Device[]>(this.baseUrl).subscribe((devices) => {
@@ -27,19 +28,19 @@ export class DeviceService {
 
   addDevice(device: Device): Observable<Device> {
     return this.http
-      .post<Device>(this.baseUrl, device)
+      .post<Device>(`${this.baseUrl}/api/v1/devices`, device)
       .pipe(tap(() => this.loadDevices()));
   }
 
   updateDevice(device: Device): Observable<Device> {
     return this.http
-      .put<Device>(`${this.baseUrl}/${device._id}`, device)
+      .put<Device>(`${this.baseUrl}/api/v1/devices/${device._id}`, device)
       .pipe(tap(() => this.loadDevices()));
   }
 
-  deleteDevice(id: string): Observable<Device> {
+  deleteDevice(device: Device): Observable<Device> {
     return this.http
-      .delete<Device>(`${this.baseUrl}/${id}`)
+      .delete<Device>(`${this.baseUrl}/api/b1/devices/${device._id}`)
       .pipe(tap(() => this.loadDevices()));
   }
 }

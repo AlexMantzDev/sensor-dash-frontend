@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reset-password',
@@ -27,10 +28,11 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css',
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit, OnDestroy {
   private passwordToken: string;
   private email: string;
   public passwordResetForm: FormGroup;
+  private resetPassSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -56,6 +58,12 @@ export class ResetPasswordComponent {
     });
   }
 
+  ngOnDestroy() {
+    if (this.resetPassSubscription) {
+      this.resetPassSubscription.unsubscribe();
+    }
+  }
+
   passwordMatchValidator(control: AbstractControl) {
     return control.get('password').value ===
       control.get('confirmPassword').value
@@ -68,7 +76,7 @@ export class ResetPasswordComponent {
     const formValue = this.passwordResetForm.getRawValue();
     const newPassword = formValue.password;
 
-    this.authService
+    this.resetPassSubscription = this.authService
       .resetPassword(this.email, this.passwordToken, newPassword)
       .subscribe(
         () => {
