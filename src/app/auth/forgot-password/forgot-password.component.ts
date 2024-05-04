@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -12,8 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatFormField,
-    MatInput,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
     MatIconModule,
     RouterLink,
@@ -31,7 +36,7 @@ export class ForgotPasswordComponent {
 
   ngOnInit() {
     this.sendResetForm = new FormGroup({
-      email: new FormControl(''),
+      email: new FormControl('', [Validators.required, Validators.email]),
     });
   }
 

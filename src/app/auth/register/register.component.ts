@@ -1,11 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  viewChild,
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
@@ -13,8 +24,8 @@ import { AuthService } from '../../shared/services/auth.service';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatFormField,
-    MatInput,
+    MatInputModule,
+    MatFormFieldModule,
     MatButtonModule,
     MatIconModule,
     RouterLink,
@@ -23,8 +34,7 @@ import { AuthService } from '../../shared/services/auth.service';
   styleUrl: './register.component.css',
 })
 export class RegisterComponent implements OnInit {
-  public registerForm: FormGroup;
-  private authSubscription: any = new Subscription();
+  public registerForm: FormGroup = new FormGroup({});
 
   constructor(
     private router: Router,
@@ -33,15 +43,24 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.registerForm = new FormGroup({
-      email: new FormControl(''),
-      password: new FormControl(''),
-      confirmPassword: new FormControl(''),
-    });
+    this.registerForm = new FormGroup(
+      {
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+        ]),
+        confirmPassword: new FormControl('', [Validators.required]),
+      },
+      { validators: this.passwordMatchValidator }
+    );
   }
 
-  ngOnDestroy() {
-    this.authSubscription.unsubscribe();
+  passwordMatchValidator(control: AbstractControl) {
+    return control.get('password').value ===
+      control.get('confirmPassword').value
+      ? null
+      : { passwordMismatch: true };
   }
 
   onSubmit() {
@@ -50,15 +69,16 @@ export class RegisterComponent implements OnInit {
     if (!formValue.email || !formValue.password || !formValue.confirmPassword)
       return;
     if (formValue.password !== formValue.confirmPassword) {
-      console.log('Passwords do not match');
       return;
     }
-    this.authSubscription.add(
-      this.authService
-        .register(formValue.email, formValue.password)
-        .subscribe((res) => {
-          this.router.navigate(['/login', { relativeTo: this.route }]);
-        })
-    );
+    this.authService
+      .register(formValue.email, formValue.password)
+      .subscribe(() => {
+        this.router.navigate(['/validation-sent', { relativeTo: this.route }]);
+      });
+  }
+
+  togglePassword(input: HTMLInputElement) {
+    input.type = input.type === 'password' ? 'text' : 'password';
   }
 }

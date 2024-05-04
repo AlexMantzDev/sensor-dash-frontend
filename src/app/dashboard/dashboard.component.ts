@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChartCardComponent } from '../chart-card/chart-card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { DeviceService } from '../shared/services/device.service';

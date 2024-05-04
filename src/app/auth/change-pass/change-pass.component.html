@@ -1,0 +1,118 @@
+<div class="dark:bg-zinc-800 dark:text-zinc-100 w-full">
+  <div class="w-3/4 p-8 flex flex-col items-center m-auto">
+    <h2>Change Password</h2>
+    <form
+      (change)="log()"
+      [formGroup]="changePassForm"
+      (ngSubmit)="onSubmit()"
+      class="w-1/2 flex flex-col items-center"
+    >
+      <div class="relative w-full">
+        <mat-form-field class="w-full">
+          <input
+            matInput
+            name="oldPassword"
+            id="oldPassword"
+            type="password"
+            placeholder="Old password"
+            formControlName="oldPassword"
+            #oldPasswordRef
+            autofocus
+            tabindex="1"
+          /><mat-error>*Old password is required</mat-error>
+        </mat-form-field>
+        <button
+          mat-icon-button
+          (click)="togglePassword(oldPasswordRef)"
+          class="show-btn text-slate-300"
+          form=""
+          tabindex="2"
+        >
+          @if(oldPasswordRef.type === 'password'){
+          <mat-icon class="text-neutral-700">visibility</mat-icon>
+          } @else {
+          <mat-icon class="text-neutral-700">visibility_off</mat-icon>
+          }
+        </button>
+      </div>
+
+      <br />
+      <div class="relative w-full">
+        <mat-form-field class="w-full">
+          <input
+            matInput
+            name="newPassword"
+            id="newPassword"
+            type="password"
+            placeholder="New password"
+            formControlName="newPassword"
+            #newPasswordRef
+            tabindex="3"
+          />
+          <mat-error>*New password must be at least 8 characters</mat-error>
+        </mat-form-field>
+        <button
+          mat-icon-button
+          (click)="togglePassword(newPasswordRef)"
+          class="show-btn text-slate-300"
+          form=""
+          tabindex="4"
+        >
+          @if(newPasswordRef.type === 'password'){
+          <mat-icon class="text-neutral-700">visibility</mat-icon>
+          } @else {
+          <mat-icon class="text-neutral-700">visibility_off</mat-icon>
+          }
+        </button>
+      </div>
+      <br />
+      <div class="relative w-full">
+        <mat-form-field class="w-full">
+          <input
+            matInput
+            name="confirmPassword"
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm new password"
+            formControlName="confirmPassword"
+            #confirmPasswordRef
+            tabindex="5"
+          />
+        </mat-form-field>
+        <button
+          mat-icon-button
+          (click)="togglePassword(confirmPasswordRef)"
+          class="show-btn text-slate-300"
+          form=""
+          tabindex="6"
+        >
+          @if(confirmPasswordRef.type === 'password'){
+          <mat-icon class="text-neutral-700">visibility</mat-icon>
+          } @else {
+          <mat-icon class="text-neutral-700">visibility_off</mat-icon>
+          }
+        </button>
+      </div>
+      <br />
+      @if(changePassForm?.errors?.['passwordMismatch'] &&
+      changePassForm.get('confirmPassword').touched){
+      <p class="text-red-500">*Passwords do not match</p>
+      } @if(changePassForm?.errors?.['newPasswordSame'] &&
+      changePassForm.get('newPassword').touched){
+      <p class="text-red-500">
+        *New password must be different from old password
+      </p>
+      }
+      <button
+        mat-raised-button
+        class="m-8"
+        color="primary"
+        type="submit"
+        [disabled]="this.changePassForm.invalid"
+        tabindex="7"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>

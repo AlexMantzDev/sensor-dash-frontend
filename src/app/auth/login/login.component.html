@@ -7,33 +7,75 @@
       class="w-1/2 flex flex-col items-center"
     >
       <mat-form-field class="w-full">
-        <input matInput placeholder="Email" formControlName="email" />
-      </mat-form-field>
-      <br />
-      <mat-form-field class="w-full">
         <input
           matInput
-          type="password"
-          placeholder="Password"
-          formControlName="password"
+          name="email"
+          id="email"
+          type="email"
+          placeholder="Email"
+          formControlName="email"
+          autofocus
+          tabindex="1"
         />
+        <mat-error>*Valid email is required</mat-error>
       </mat-form-field>
       <br />
-
-      <button mat-raised-button class="m-8" color="primary" type="submit">
+      <div class="relative w-full">
+        <mat-form-field class="w-full">
+          <input
+            matInput
+            name="password"
+            id="password"
+            type="password"
+            placeholder="Password"
+            formControlName="password"
+            #passwordRef
+            tabindex="2"
+          />
+          <mat-error>*Password must be at least 8 characters</mat-error>
+        </mat-form-field>
+        <button
+          mat-icon-button
+          form=""
+          (click)="togglePassword(passwordRef)"
+          class="show-btn text-slate-300"
+          tabindex="3"
+        >
+          @if(passwordRef.type === 'password'){
+          <mat-icon class="text-neutral-700">visibility</mat-icon>
+          } @else {
+          <mat-icon class="text-neutral-700">visibility_off</mat-icon>
+          }
+        </button>
+      </div>
+      <br />
+      <button
+        mat-raised-button
+        [disabled]="this.loginForm.invalid"
+        class="mt-2 mb-8"
+        color="primary"
+        type="submit"
+        tabindex="4"
+      >
         Login
       </button>
       <p>
         Don't have an account? Register
-        <a [routerLink]="['/register']" routerLinkActive="router-link-active"
+        <a
+          class="text-blue-300 underline"
+          [routerLink]="['/register']"
+          routerLinkActive="router-link-active"
+          tabindex="5"
           >here</a
         >
       </p>
       <p>
         Forgot password?
         <a
+          class="text-blue-300 underline"
           [routerLink]="['/forgot-password']"
           routerLinkActive="router-link-active"
+          tabindex="6"
           >Reset</a
         >
       </p>

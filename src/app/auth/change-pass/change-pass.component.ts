@@ -12,9 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-reset-password',
+  selector: 'app-change-pass',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -24,13 +25,13 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
     RouterLink,
   ],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css',
+  templateUrl: './change-pass.component.html',
+  styleUrl: './change-pass.component.css',
 })
-export class ResetPasswordComponent {
-  private passwordToken: string;
+export class ChangePassComponent {
+  public currentUserSubscription: Subscription;
+  public changePassForm: FormGroup;
   private email: string;
-  public passwordResetForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -39,39 +40,58 @@ export class ResetPasswordComponent {
   ) {}
 
   ngOnInit() {
-    this.passwordResetForm = new FormGroup(
+    this.currentUserSubscription = this.authService.currentUser.subscribe(
+      (user) => {
+        if (user) {
+          this.email = user.email;
+        }
+      }
+    );
+    this.changePassForm = new FormGroup(
       {
-        password: new FormControl('', [
+        oldPassword: new FormControl('', [Validators.required]),
+        newPassword: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
         ]),
         confirmPassword: new FormControl('', [Validators.required]),
       },
-      { validators: this.passwordMatchValidator }
+      { validators: [this.passwordMatchValidator, this.newPasswordSame] }
     );
+  }
 
-    this.route.queryParams.subscribe((params) => {
-      this.email = params['email'];
-      this.passwordToken = params['token'];
-    });
+  ngOnDestory() {
+    this.currentUserSubscription.unsubscribe();
+  }
+
+  log() {
+    console.log(this.changePassForm.errors);
   }
 
   passwordMatchValidator(control: AbstractControl) {
-    return control.get('password').value ===
+    return control.get('newPassword').value ===
       control.get('confirmPassword').value
       ? null
       : { passwordMismatch: true };
   }
 
+  newPasswordSame(control: AbstractControl) {
+    return control.get('oldPassword').value !== control.get('newPassword').value
+      ? null
+      : { newPasswordSame: true };
+  }
+
   onSubmit() {
-    if (this.passwordResetForm.invalid) return;
-    const formValue = this.passwordResetForm.getRawValue();
-    const newPassword = formValue.password;
+    if (this.changePassForm.invalid) return;
+    const formValue = this.changePassForm.getRawValue();
+    const oldPassword = formValue.oldPassword;
+    const newPassword = formValue.newPassword;
 
     this.authService
-      .resetPassword(this.email, this.passwordToken, newPassword)
+      .changePassword(this.email, oldPassword, newPassword)
       .subscribe(
         () => {
+          this.authService.currentUserSubject.next(null);
           this.router.navigate(['/change-pass-complete', 'success'], {
             relativeTo: this.route,
           });
@@ -83,8 +103,8 @@ export class ResetPasswordComponent {
         }
       );
 
-    if (!formValue.password || !formValue.confirmPassword) return;
-    if (formValue.password !== formValue.confirmPassword) {
+    if (!formValue.newPassword || !formValue.confirmPassword) return;
+    if (formValue.newPassword !== formValue.confirmPassword) {
       return;
     }
   }

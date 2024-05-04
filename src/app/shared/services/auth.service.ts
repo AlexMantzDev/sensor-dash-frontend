@@ -101,6 +101,22 @@ export class AuthService {
     );
   }
 
+  changePassword(
+    email: string,
+    oldPassword: string,
+    newPassword: string
+  ): Observable<any> {
+    return this.http.post(
+      `${this.backendUrlString}/api/v1/auth/change-password`,
+      {
+        email,
+        oldPassword,
+        newPassword,
+      },
+      { withCredentials: true }
+    );
+  }
+
   logout(): Observable<any> {
     return this.http.delete(`${this.backendUrlString}/api/v1/auth/logout`, {
       withCredentials: true,

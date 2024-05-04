@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,13 +37,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = new FormGroup({
-      email: new FormControl(''),
-      password: new FormControl(''),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required]),
     });
   }
 
   onSubmit() {
-    if (!this.loginForm.valid) return;
+    if (this.loginForm.invalid) return;
     const formValue = this.loginForm.getRawValue();
     if (!formValue.email || !formValue.password) return;
     this.authService
@@ -50,5 +55,13 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/dashboard'], { relativeTo: this.route });
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.authService.currentUserSubject.unsubscribe();
+  }
+
+  togglePassword(input: HTMLInputElement) {
+    input.type = input.type === 'password' ? 'text' : 'password';
   }
 }

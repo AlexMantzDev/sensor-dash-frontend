@@ -1,0 +1,18 @@
+<mat-dialog-content>
+  <div class="p-16 flex flex-col items-center">
+    <button class="m-4" mat-raised-button color="warn" (click)="onSignOut()">
+      Sign Out
+    </button>
+    <button
+      class="m-4"
+      mat-raised-button
+      color="primary"
+      (click)="navigateTo('change-pass')"
+    >
+      Change Password
+    </button>
+    <button mat-icon-button class="close-btn" (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</mat-dialog-content>

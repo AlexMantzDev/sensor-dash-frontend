@@ -3,13 +3,13 @@ import { MatButton } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-password-change',
+  selector: 'app-change-pass-complete',
   standalone: true,
   imports: [MatButton],
-  templateUrl: './password-change.component.html',
-  styleUrl: './password-change.component.css',
+  templateUrl: './change-pass-complete.component.html',
+  styleUrl: './change-pass-complete.component.css',
 })
-export class PasswordChangeComponent implements OnInit {
+export class ChangePassCompleteComponent implements OnInit {
   public status: string;
   public msg: string;
 
