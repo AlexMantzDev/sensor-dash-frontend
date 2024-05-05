@@ -1,3 +1,17 @@
 export class User {
-  constructor(public email: string, public id: string) {}
+  #email: string;
+  #id: string;
+
+  constructor(email: string, id: string) {
+    this.#email = email;
+    this.#id = id;
+  }
+
+  get id(): string {
+    return this.#id;
+  }
+
+  get email(): string {
+    return this.#email;
+  }
 }

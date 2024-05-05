@@ -4,10 +4,10 @@
       <div class="place-self-center">LOGO</div>
     </div>
     <div class="w-auto ml-auto grid">
-      @if(this.isLoggedIn){
+      @if(this.user){
       <div class="place-self-center">
         <button mat-button (click)="openDialog()">
-          {{ this.currentUser?.email }}
+          {{ this.user.email }}
         </button>
       </div>
       } @else {

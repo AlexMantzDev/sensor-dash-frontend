@@ -24,11 +24,16 @@ export class SignOutDialogComponent implements OnDestroy {
   ) {}
 
   onSignOut(): void {
-    this.logoutSubscription = this.authService.logout().subscribe(() => {
-      this.dialogRef.close();
-      this.authService.currentUserSubject.next(null);
-      this.router.navigate(['/login'], { relativeTo: this.route });
-    });
+    this.logoutSubscription = this.authService.logout().subscribe(
+      (res) => {
+        this.dialogRef.close();
+        this.authService.setCurrentUser(null);
+        this.router.navigate(['/login'], { relativeTo: this.route });
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   ngOnDestroy() {

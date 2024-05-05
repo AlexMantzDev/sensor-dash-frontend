@@ -1,6 +1,4 @@
-export class Env {
-  constructor(
-    public baseUrl = 'http://localhost:3000',
-    public timezone = 'America/Chicago'
-  ) {}
-}
+export const env = {
+  baseUrl: 'http://localhost:3000',
+  timezone: 'America/Chicago',
+};

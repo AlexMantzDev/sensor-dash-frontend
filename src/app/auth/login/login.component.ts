@@ -50,13 +50,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (!formValue.email || !formValue.password) return;
     this.loginSubcription = this.authService
       .login(formValue.email, formValue.password)
-      .subscribe((res) => {
-        const user = res.data.user;
-        if (user) {
-          this.authService.currentUserSubject.next(user);
+      .subscribe(
+        (res) => {
           this.router.navigate(['/dashboard'], { relativeTo: this.route });
+        },
+        (err) => {
+          console.log(err);
+          //TODO pop up error message
         }
-      });
+      );
   }
 
   ngOnDestroy() {

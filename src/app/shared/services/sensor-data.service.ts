@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { SensorData } from '../models/SensorData.model';
-import { Env } from '../env/env';
+import { env } from '../env/env';
 import { Device } from '../models/Device.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SensorDataService {
-  private baseUrl = this.env.baseUrl;
+  private baseUrl = env.baseUrl;
   private sensorDataSubject = new BehaviorSubject<SensorData | undefined>(
     undefined
   );
@@ -31,7 +31,7 @@ export class SensorDataService {
     { time: '1714582800', temperature: 75 },
   ];
 
-  constructor(private http: HttpClient, private env: Env) {}
+  constructor(private http: HttpClient) {}
 
   loadTemperature(device: Device) {
     this.http.get<SensorData[]>(`${this.baseUrl}/api/v1/sensor-data`, {

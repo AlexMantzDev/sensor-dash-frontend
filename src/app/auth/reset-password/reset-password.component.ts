@@ -79,12 +79,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.resetPassSubscription = this.authService
       .resetPassword(this.email, this.passwordToken, newPassword)
       .subscribe(
-        () => {
+        (res) => {
           this.router.navigate(['/change-pass-complete', 'success'], {
             relativeTo: this.route,
           });
         },
-        () => {
+        (err) => {
+          console.log(err);
           this.router.navigate(['/change-pass-complete', 'failed'], {
             relativeTo: this.route,
           });

@@ -28,23 +28,16 @@ import { Subscription } from 'rxjs';
   templateUrl: './change-pass.component.html',
   styleUrl: './change-pass.component.css',
 })
-export class ChangePassComponent implements OnInit, OnDestroy {
-  public currentUserSubscription: Subscription;
+export class ChangePassComponent implements OnInit {
   public changePassForm: FormGroup;
-  private email: string;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private authService: AuthService
+    public router: Router,
+    public route: ActivatedRoute,
+    public authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.currentUserSubscription = this.authService.currentUser.subscribe(
-      (user) => {
-        this.email = user.email;
-      }
-    );
     this.changePassForm = new FormGroup(
       {
         oldPassword: new FormControl('', [Validators.required]),
@@ -56,14 +49,6 @@ export class ChangePassComponent implements OnInit, OnDestroy {
       },
       { validators: [this.passwordMatchValidator, this.newPasswordSame] }
     );
-  }
-
-  ngOnDestroy() {
-    this.currentUserSubscription.unsubscribe();
-  }
-
-  log() {
-    console.log(this.changePassForm.errors);
   }
 
   passwordMatchValidator(control: AbstractControl) {
@@ -82,24 +67,25 @@ export class ChangePassComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.changePassForm.invalid) return;
     const formValue = this.changePassForm.getRawValue();
+    const email = this.authService.currentUserValue.email;
     const oldPassword = formValue.oldPassword;
     const newPassword = formValue.newPassword;
 
-    this.authService
-      .changePassword(this.email, oldPassword, newPassword)
-      .subscribe(
-        () => {
-          this.authService.currentUserSubject.next(null);
-          this.router.navigate(['/change-pass-complete', 'success'], {
-            relativeTo: this.route,
-          });
-        },
-        () => {
-          this.router.navigate(['/change-pass-complete', 'failed'], {
-            relativeTo: this.route,
-          });
-        }
-      );
+    this.authService.changePassword(email, oldPassword, newPassword).subscribe(
+      (res) => {
+        this.authService.setCurrentUser(null);
+        this.router.navigate(['/change-pass-complete', 'success'], {
+          relativeTo: this.route,
+        });
+      },
+      (err) => {
+        console.log(err);
+        this.router.navigate(['/change-pass-complete', 'failed'], {
+          relativeTo: this.route,
+        });
+        //TODO: pop up error message
+      }
+    );
 
     if (!formValue.newPassword || !formValue.confirmPassword) return;
     if (formValue.newPassword !== formValue.confirmPassword) {

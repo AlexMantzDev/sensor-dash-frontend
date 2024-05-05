@@ -47,9 +47,15 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     const email = formValue.email;
     this.forgotPassSubsription = this.authService
       .forgotPassword(email)
-      .subscribe(() => {
-        this.router.navigate(['/reset-sent', { relativeTo: this.route }]);
-      });
+      .subscribe(
+        (res) => {
+          this.router.navigate(['/reset-sent', { relativeTo: this.route }]);
+        },
+        (err) => {
+          console.log(err);
+          //TODO pop up error message
+        }
+      );
   }
 
   ngOnDestroy() {

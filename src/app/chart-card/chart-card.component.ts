@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { SensorDataService } from '../shared/services/sensor-data.service';
-import { Env } from '../shared/env/env';
+import { env } from '../shared/env/env';
 
 @Component({
   selector: 'app-chart-card',
@@ -20,7 +20,7 @@ export class ChartCardComponent implements OnInit {
   @Input() device = {};
 
   private localizedData: { time: string; temperature: number }[] = [];
-  private localTimezone = this.env.timezone;
+  private localTimezone = env.timezone;
 
   public lineGraphData: ChartConfiguration<
     'line',
@@ -79,7 +79,7 @@ export class ChartCardComponent implements OnInit {
     },
   };
 
-  constructor(private sensorDataService: SensorDataService, private env: Env) {
+  constructor(private sensorDataService: SensorDataService) {
     Chart.register(annotationPlugin);
     moment.tz.setDefault(this.localTimezone);
   }

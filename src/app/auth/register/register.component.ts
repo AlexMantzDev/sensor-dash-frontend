@@ -82,9 +82,18 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
     this.registerSubscription = this.authService
       .register(formValue.email, formValue.password)
-      .subscribe(() => {
-        this.router.navigate(['/validation-sent', { relativeTo: this.route }]);
-      });
+      .subscribe(
+        (res) => {
+          this.router.navigate([
+            '/validation-sent',
+            { relativeTo: this.route },
+          ]);
+        },
+        (error) => {
+          console.log(error);
+          //TODO pop up error message
+        }
+      );
   }
 
   togglePassword(input: HTMLInputElement) {

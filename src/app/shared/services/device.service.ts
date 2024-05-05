@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Device } from '../models/Device.model';
-import { Env } from '../env/env';
+import { env } from '../env/env';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeviceService {
-  private baseUrl = this.env.baseUrl;
+  private baseUrl = env.baseUrl;
 
   private devices: Device[] = [
     { _id: '123123', ownerId: '123123' },
@@ -18,7 +18,7 @@ export class DeviceService {
   public devicesSubject = new BehaviorSubject<Device[] | null>(this.devices);
   public devicesList = this.devicesSubject.asObservable();
 
-  constructor(private http: HttpClient, private env: Env) {}
+  constructor(private http: HttpClient) {}
 
   loadDevices() {
     this.http.get<Device[]>(this.baseUrl).subscribe((devices) => {

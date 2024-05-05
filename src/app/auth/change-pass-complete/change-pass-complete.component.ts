@@ -15,12 +15,18 @@ export class ChangePassCompleteComponent implements OnInit, OnDestroy {
   public status: string;
   public msg: string;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(public router: Router, public route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.routeSubscription = this.route.params.subscribe((params) => {
-      this.status = params['status'];
-    });
+    this.routeSubscription = this.route.params.subscribe(
+      (params) => {
+        this.status = params['status'];
+      },
+      (err) => {
+        console.log(err);
+        //TODO pop up error message
+      }
+    );
   }
 
   ngOnDestroy() {
