@@ -1,20 +1,28 @@
-<div class="flex min-h-full w-full">
-  <aside class="dark:bg-zinc-700 dark:text-zinc-100 w-96">
-    <button mat-icon-button (click)="toggleAside()">
-      @if(this.isAsideOpen){
-      <mat-icon>chevron-right</mat-icon>
+<div class="relative h-full w-full dark:bg-zinc-800 dark:text-zinc-100">
+  <aside class="sidenav absolute l-0 t-0 h-full bg-zinc-700" #sidenav>
+    <button mat-button class="sidenav-btn" type="button" (click)="toggleMenu()">
+      @if(this.isSidenavOpen) {
+      <mat-icon>chevron_left</mat-icon>
       } @else {
-      <mat-icon>chevron-left</mat-icon>
+      <mat-icon>chevron_right</mat-icon>
       }
     </button>
+    <div class="sidenav-content flex flex-col sidenav-hidden" #sidenavContent>
+      <button type="button" style="--1: 0" class="m-2">thing</button>
+      <button type="button" style="--1: 1" class="m-2">thing</button>
+      <button type="button" style="--1: 2" class="m-2">thing</button>
+      <button type="button" style="--1: 3" class="m-2">thing</button>
+      <button type="button" style="--1: 4" class="m-2">thing</button>
+    </div>
   </aside>
-  <main class="dark:bg-zinc-800 dark:text-zinc-100 flex-1">
+  <div #filter class="flex h-full w-full filter-inactive"></div>
+  <main class="flex-1 ml-64 mr-64">
     <div class="m-4">
       <h2>Sensors</h2>
     </div>
     <section class="text-black">
       @for (device of this.devices; track $index) {
-      <app-chart-card [device]="device"></app-chart-card>
+      <app-chart-card class="card" [device]="device"></app-chart-card>
       }
     </section>
   </main>

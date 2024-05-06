@@ -1,4 +1,57 @@
+:root {
+  --i: 0;
+}
+
 :host {
   display: flex;
   flex-grow: 1;
+}
+
+.sidenav {
+  z-index: 100;
+  width: 54px;
+  transition: width 1s;
+}
+
+.sidenav-hidden button {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity, transform 1s ease;
+}
+
+.sidenav-visible button {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: calc(0.05s * var(--i)) !important;
+  transition-property: opacity, transform;
+  transition-duration: 1s;
+  transition-timing-function: ease;
+}
+
+.sidenav-btn {
+  width: 54px;
+  height: 54px;
+  padding: auto;
+}
+
+.filter-inactive {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  transition: background-color 1s;
+}
+
+.filter-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: hsla(0, 0%, 0%, 0.8);
+  z-index: 20;
+  transition: background-color 1s;
+}
+
+main {
+  position: relative;
+  z-index: 10;
 }

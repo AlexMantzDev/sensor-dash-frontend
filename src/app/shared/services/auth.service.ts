@@ -10,7 +10,7 @@ import { env } from '../env/env';
 })
 export class AuthService {
   public baseUrl = env.baseUrl;
-  private currentUserSubject = new BehaviorSubject<User>(null); //TODO set to private
+  private currentUserSubject = new BehaviorSubject<User>(null);
   public currentUser: Observable<User> = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -25,7 +25,7 @@ export class AuthService {
 
   public authenticate(): Observable<boolean> {
     return this.http
-      .get(`${this.baseUrl}/api/v1/auth/me`, {
+      .get(`${this.baseUrl}/sensor-dash/v1/auth/me`, {
         withCredentials: true,
       })
       .pipe(
@@ -47,7 +47,7 @@ export class AuthService {
 
   public register(email: string, password: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/v1/auth/register`,
+      `${this.baseUrl}/sensor-dash/v1/auth/register`,
       {
         email,
         password,
@@ -59,7 +59,7 @@ export class AuthService {
   public login(email: string, password: string): Observable<any> {
     return this.http
       .post(
-        `${this.baseUrl}/api/v1/auth/login`,
+        `${this.baseUrl}/sensor-dash/v1/auth/login`,
         {
           email,
           password,
@@ -77,7 +77,7 @@ export class AuthService {
 
   public forgotPassword(email: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/v1/auth/forgot-password`,
+      `${this.baseUrl}/sensor-dash/v1/auth/forgot-password`,
       {
         email,
       },
@@ -92,7 +92,7 @@ export class AuthService {
   ): Observable<any> {
     return this.http
       .post(
-        `${this.baseUrl}/api/v1/auth/reset-password`,
+        `${this.baseUrl}/sensor-dash/v1/auth/reset-password`,
         {
           password,
           passwordToken: token,
@@ -110,7 +110,7 @@ export class AuthService {
 
   public verifyEmail(email: string, token: string): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}/api/v1/auth/verify`,
+      `${this.baseUrl}/sensor-dash/v1/auth/verify`,
       {
         email,
         verificationToken: token,
@@ -126,7 +126,7 @@ export class AuthService {
   ): Observable<any> {
     return this.http
       .post(
-        `${this.baseUrl}/api/v1/auth/change-password`,
+        `${this.baseUrl}/sensor-dash/v1/auth/change-password`,
         {
           email,
           oldPassword,
@@ -143,7 +143,7 @@ export class AuthService {
   }
 
   public logout(): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/api/v1/auth/logout`, {
+    return this.http.delete(`${this.baseUrl}/sensor-dash/v1/auth/logout`, {
       withCredentials: true,
     });
   }
