@@ -28,7 +28,7 @@ $number-of-buttons: 3;
     transition: height $transition-time ease;
     & li {
       opacity: 0;
-      transform: translateX(100%);
+      transform: translateX(-100%);
       transition: opacity, transform $transition-time ease;
     }
   }
@@ -36,25 +36,14 @@ $number-of-buttons: 3;
 
 .menu-content {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   height: 100%;
+  & li {
+    padding: 0.5rem;
+  }
+
+  & li:hover {
+    background-color: hsla(0, 0%, 0%, 0.1);
+    cursor: pointer;
+  }
 }
-
-// .menu-closed button {
-//   opacity: 0;
-//   transform: translateX(100%);
-//   transition: opacity, transform $transition-time ease;
-// }
-
-// .menu-open button {
-//   opacity: 1;
-//   transform: translateX(0);
-//   transition-property: opacity, transform;
-//   transition-duration: $transition-time;
-//   transition-timing-function: ease;
-//   @for $i from 1 through $number-of-buttons {
-//     &:nth-child(#{$i}) {
-//       transition-delay: calc(($transition-time / $number-of-buttons) * $i);
-//     }
-//   }
-// }

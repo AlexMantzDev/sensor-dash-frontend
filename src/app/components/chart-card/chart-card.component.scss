@@ -1,0 +1,9 @@
+.card {
+  & h2 {
+    display: inline-block;
+  }
+  & p {
+    display: inline-block;
+    margin-left: 1em;
+  }
+}

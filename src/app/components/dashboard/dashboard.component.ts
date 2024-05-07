@@ -42,17 +42,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   toggleMenu() {
     if (!this.isSidenavOpen) {
-      this.sidenav.nativeElement.style.width = '254px';
       this.isSidenavOpen = true;
-      this.filter.nativeElement.classList.add('filter-active');
-      this.filter.nativeElement.classList.remove('filter-inactive');
+      this.sidenav.nativeElement.style.width = '254px';
       this.sidenavContent.nativeElement.classList.add('sidenav-visible');
       this.sidenavContent.nativeElement.classList.remove('sidenav-hidden');
     } else {
-      this.sidenav.nativeElement.style.width = '54px';
       this.isSidenavOpen = false;
-      this.filter.nativeElement.classList.add('filter-inactive');
-      this.filter.nativeElement.classList.remove('filter-active');
+      this.sidenav.nativeElement.style.width = '54px';
       this.sidenavContent.nativeElement.classList.add('sidenav-hidden');
       this.sidenavContent.nativeElement.classList.remove('sidenav-visible');
     }
