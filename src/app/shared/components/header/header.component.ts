@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { SignOutDialogComponent } from '../../../auth/sign-out-dialog/sign-out-dialog.component';
+import { SignOutDialogComponent } from '../../../auth/components/sign-out-dialog/sign-out-dialog.component';
 import { User } from '../../models/User.model';
 import { Subscription } from 'rxjs';
 
@@ -14,9 +14,10 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [MatIconModule, MatButtonModule, CommonModule, RouterLink],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild('menuRef') menuRef: ElementRef;
   public user: User;
   public userSubscription: Subscription;
   public isMenuOpen = false;
@@ -40,6 +41,13 @@ export class HeaderComponent implements OnInit {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) {
+      this.menuRef.nativeElement.classList.add('menu-open');
+      this.menuRef.nativeElement.classList.remove('menu-closed');
+    } else {
+      this.menuRef.nativeElement.classList.add('menu-closed');
+      this.menuRef.nativeElement.classList.remove('menu-open');
+    }
   }
 
   openDialog() {

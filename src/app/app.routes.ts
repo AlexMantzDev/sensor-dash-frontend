@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { RegisterComponent } from './auth/register/register.component';
-import { LoginComponent } from './auth/login/login.component';
-import { VerifyComponent } from './auth/verify/verify.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RegisterComponent } from './auth/components/register/register.component';
+import { LoginComponent } from './auth/components/login/login.component';
+import { VerifyComponent } from './auth/components/verify/verify.component';
 import { authGuard } from './auth/auth.guard';
-import { ChangePassCompleteComponent } from './auth/change-pass-complete/change-pass-complete.component';
-import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
-import { ResetSentComponent } from './auth/reset-sent/reset-sent.component';
-import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
-import { ValidationSentComponent } from './auth/validation-sent/validation-sent.component';
-import { ChangePassComponent } from './auth/change-pass/change-pass.component';
+import { ChangePassCompleteComponent } from './auth/components/change-pass-complete/change-pass-complete.component';
+import { ResetPasswordComponent } from './auth/components/reset-password/reset-password.component';
+import { ResetSentComponent } from './auth/components/reset-sent/reset-sent.component';
+import { ForgotPasswordComponent } from './auth/components/forgot-password/forgot-password.component';
+import { ValidationSentComponent } from './auth/components/validation-sent/validation-sent.component';
+import { ChangePassComponent } from './auth/components/change-pass/change-pass.component';
 
 export const routes: Routes = [
   {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { SensorData } from '../models/SensorData.model';
-import { env } from '../env/env';
+import { env } from '../../environments/environment';
 import { Device } from '../models/Device.model';
 
 @Injectable({

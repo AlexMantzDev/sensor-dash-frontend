@@ -1,0 +1,60 @@
+$transition-time: 0.2s;
+$number-of-buttons: 3;
+
+.menu {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+
+  &-open {
+    height: 32px;
+    transition: height $transition-time ease;
+    & li {
+      opacity: 1;
+      transform: translateX(0);
+      transition-property: opacity, transform;
+      transition-duration: $transition-time;
+      transition-timing-function: ease;
+      @for $i from 1 through $number-of-buttons {
+        &:nth-child(#{$i}) {
+          transition-delay: calc(($transition-time / $number-of-buttons) * $i);
+        }
+      }
+    }
+  }
+
+  &-closed {
+    height: 0px;
+    transition: height $transition-time ease;
+    & li {
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity, transform $transition-time ease;
+    }
+  }
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+// .menu-closed button {
+//   opacity: 0;
+//   transform: translateX(100%);
+//   transition: opacity, transform $transition-time ease;
+// }
+
+// .menu-open button {
+//   opacity: 1;
+//   transform: translateX(0);
+//   transition-property: opacity, transform;
+//   transition-duration: $transition-time;
+//   transition-timing-function: ease;
+//   @for $i from 1 through $number-of-buttons {
+//     &:nth-child(#{$i}) {
+//       transition-delay: calc(($transition-time / $number-of-buttons) * $i);
+//     }
+//   }
+// }

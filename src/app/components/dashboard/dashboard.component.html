@@ -1,0 +1,29 @@
+<div class="relative h-full w-full dark:bg-zinc-800 dark:text-zinc-100">
+  <aside class="sidenav absolute l-0 t-0 h-full bg-zinc-700" #sidenav>
+    <button mat-button class="sidenav-btn" type="button" (click)="toggleMenu()">
+      @if(this.isSidenavOpen) {
+      <mat-icon>chevron_left</mat-icon>
+      } @else {
+      <mat-icon>chevron_right</mat-icon>
+      }
+    </button>
+    <div class="sidenav-content sidenav-hidden" #sidenavContent>
+      <button type="button" class="m-2">thing</button>
+      <button type="button" class="m-2">thing</button>
+      <button type="button" class="m-2">thing</button>
+      <button type="button" class="m-2">thing</button>
+      <button type="button" class="m-2">thing</button>
+    </div>
+  </aside>
+  <div #filter class="filter-inactive"></div>
+  <main class="flex-1 ml-64 mr-64">
+    <div class="m-4">
+      <h2>Sensors</h2>
+    </div>
+    <section class="text-black">
+      @for (device of this.devices; track $index) {
+      <app-chart-card class="card" [device]="device"></app-chart-card>
+      }
+    </section>
+  </main>
+</div>

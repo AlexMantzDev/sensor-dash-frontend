@@ -6,8 +6,8 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { LoginComponent } from './auth/login/login.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { LoginComponent } from './auth/components/login/login.component';
 import { filter } from 'rxjs';
 
 @Component({
@@ -15,7 +15,7 @@ import { filter } from 'rxjs';
   standalone: true,
   imports: [RouterOutlet, HeaderComponent, DashboardComponent, LoginComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'sensor-dash';

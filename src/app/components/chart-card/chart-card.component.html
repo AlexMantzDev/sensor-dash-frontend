@@ -1,0 +1,12 @@
+<mat-card class="m-4 p-8 min-w-max">
+  <h2>Device:</h2>
+  {{ device["_id"] }}
+  <h2>Temperature</h2>
+  <canvas
+    height="200"
+    baseChart
+    [data]="lineGraphData"
+    [options]="lineGraphOptions"
+    [type]="'line'"
+  ></canvas>
+</mat-card>
