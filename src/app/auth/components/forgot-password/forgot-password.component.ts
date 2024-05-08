@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,7 +11,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-forgot-password',
@@ -27,8 +26,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',
 })
-export class ForgotPasswordComponent implements OnInit, OnDestroy {
-  public forgotPassSubsription: Subscription;
+export class ForgotPasswordComponent implements OnInit {
   public sendResetForm: FormGroup;
   constructor(
     private router: Router,
@@ -45,22 +43,14 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   onSubmit() {
     const formValue = this.sendResetForm.getRawValue();
     const email = formValue.email;
-    this.forgotPassSubsription = this.authService
-      .forgotPassword(email)
-      .subscribe(
-        (res) => {
-          this.router.navigate(['/reset-sent', { relativeTo: this.route }]);
-        },
-        (err) => {
-          console.log(err);
-          //TODO pop up error message
-        }
-      );
-  }
-
-  ngOnDestroy() {
-    if (this.forgotPassSubsription) {
-      this.forgotPassSubsription.unsubscribe();
-    }
+    this.authService.forgotPassword(email).subscribe(
+      (res) => {
+        this.router.navigate(['/reset-sent', { relativeTo: this.route }]);
+      },
+      (err) => {
+        console.log(err);
+        //TODO pop up error message
+      }
+    );
   }
 }

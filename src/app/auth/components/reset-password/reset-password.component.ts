@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -12,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription } from 'rxjs';
+import { customValidators } from '../../../shared/lib/custom-validators';
 
 @Component({
   selector: 'app-reset-password',
@@ -28,11 +27,10 @@ import { Subscription } from 'rxjs';
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })
-export class ResetPasswordComponent implements OnInit, OnDestroy {
+export class ResetPasswordComponent implements OnInit {
   private passwordToken: string;
   private email: string;
   public passwordResetForm: FormGroup;
-  private resetPassSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -52,7 +50,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           Validators.minLength(8),
         ]),
       },
-      { validators: this.passwordMatchValidator }
+      { validators: customValidators.passwordMatch }
     );
 
     this.route.queryParams.subscribe((params) => {
@@ -61,25 +59,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    if (this.resetPassSubscription) {
-      this.resetPassSubscription.unsubscribe();
-    }
-  }
-
-  passwordMatchValidator(control: AbstractControl) {
-    return control.get('password').value ===
-      control.get('confirmPassword').value
-      ? null
-      : { passwordMismatch: true };
-  }
-
   onSubmit() {
     if (this.passwordResetForm.invalid) return;
     const formValue = this.passwordResetForm.getRawValue();
     const newPassword = formValue.password;
 
-    this.resetPassSubscription = this.authService
+    this.authService
       .resetPassword(this.email, this.passwordToken, newPassword)
       .subscribe(
         (res) => {

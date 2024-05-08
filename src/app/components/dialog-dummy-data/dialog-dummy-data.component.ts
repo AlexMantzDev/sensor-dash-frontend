@@ -31,9 +31,6 @@ import { Subscription } from 'rxjs';
 })
 export class DialogDummyDataComponent implements OnInit {
   dummyDataForm: FormGroup = new FormGroup({});
-  private genDummyDataSub: Subscription;
-  private getAllDataSub: Subscription;
-  private deviceListSub: Subscription;
 
   constructor(
     public router: Router,
@@ -50,23 +47,11 @@ export class DialogDummyDataComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
-    if (this.genDummyDataSub) {
-      this.genDummyDataSub.unsubscribe();
-    }
-    if (this.getAllDataSub) {
-      this.getAllDataSub.unsubscribe();
-    }
-    if (this.deviceListSub) {
-      this.deviceListSub.unsubscribe();
-    }
-  }
-
   onSubmit() {
     if (this.dummyDataForm.invalid) return;
     const deviceId = this.dummyDataForm.get('deviceId')?.value;
     const numEntries = this.dummyDataForm.get('numEntries')?.value;
-    this.genDummyDataSub = this.sensorDataService
+    this.sensorDataService
       .genDummyData(deviceId, numEntries)
       .subscribe((res) => {
         this.sensorDataService.getAllDataByUserId().subscribe((data) => {

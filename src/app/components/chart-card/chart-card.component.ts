@@ -33,9 +33,8 @@ export class ChartCardComponent implements OnInit, OnDestroy {
   @Input() device: string;
   @Output() openDialogEvent = new EventEmitter<string>();
   @Output() dialogInputEvent = new EventEmitter<string>();
-  private dialogSubscription: Subscription;
-  private localTimezone = env.timezone;
-  private maxDataPoints = env.maxDataPoints;
+  private sensorDataSub: Subscription;
+  private deleteDialogSub: Subscription;
   public chartData: ChartConfiguration<'line', any>['data'];
   public lineGraphOptions: ChartConfiguration<'line'>['options'] = {
     plugins: {
@@ -73,15 +72,15 @@ export class ChartCardComponent implements OnInit, OnDestroy {
     public dialog: MatDialog
   ) {
     Chart.register(annotationPlugin);
-    moment.tz.setDefault(this.localTimezone);
+    moment.tz.setDefault(env.timezone);
   }
 
   ngOnInit() {
-    this.sensorDataService.sensorData.subscribe((data) => {
+    this.sensorDataSub = this.sensorDataService.sensorData.subscribe((data) => {
       if (data) {
         const filteredData = this.filterDataDeviceId(data, this.device);
         const updatedData = this.convertDataToLocale(filteredData);
-        const trimmedData = updatedData.slice(-this.maxDataPoints);
+        const trimmedData = updatedData.slice(-env.maxDataPoints);
         const temperatureData = this.filterDataTemperature(trimmedData);
         const humidityData = this.filterDataHumidity(trimmedData);
         this.updateGraphData(temperatureData, humidityData);
@@ -90,12 +89,15 @@ export class ChartCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.dialogSubscription) {
-      this.dialogSubscription.unsubscribe();
+    if (this.deleteDialogSub) {
+      this.deleteDialogSub.unsubscribe();
+    }
+    if (this.sensorDataSub) {
+      this.sensorDataSub.unsubscribe();
     }
   }
 
-  private updateGraphData(t, h): void {
+  updateGraphData(t, h): void {
     const data: ChartConfiguration<'line', any>['data'] = {
       datasets: [
         {
@@ -162,7 +164,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(DialogDeleteDeviceComponent, {
       data: { deviceId: $deviceId },
     });
-    this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
+    this.deleteDialogSub = dialogRef.afterClosed().subscribe((result) => {
       this.dialogInputEvent.emit(result);
     });
 

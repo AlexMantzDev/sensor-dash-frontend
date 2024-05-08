@@ -1,10 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../../../auth/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sign-out-dialog',
@@ -13,9 +12,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './sign-out-dialog.component.html',
   styleUrl: './sign-out-dialog.component.scss',
 })
-export class SignOutDialogComponent implements OnDestroy {
-  private logoutSubscription: Subscription;
-
+export class SignOutDialogComponent {
   constructor(
     public authService: AuthService,
     public dialogRef: MatDialogRef<SignOutDialogComponent>,
@@ -24,7 +21,7 @@ export class SignOutDialogComponent implements OnDestroy {
   ) {}
 
   onSignOut(): void {
-    this.logoutSubscription = this.authService.logout().subscribe(
+    this.authService.logout().subscribe(
       (res) => {
         this.dialogRef.close();
         this.authService.setCurrentUser(null);
@@ -36,18 +33,12 @@ export class SignOutDialogComponent implements OnDestroy {
     );
   }
 
-  ngOnDestroy() {
-    if (this.logoutSubscription) {
-      this.logoutSubscription.unsubscribe();
-    }
-  }
-
   onCancel(): void {
     this.dialogRef.close();
   }
 
-  navigateTo(path): void {
+  toChangePass(): void {
     this.dialogRef.close();
-    this.router.navigate([path], { relativeTo: this.route });
+    this.router.navigate(['/change-pass'], { relativeTo: this.route });
   }
 }

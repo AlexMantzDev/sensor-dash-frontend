@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,7 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../auth.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -27,9 +26,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
-  private loginSubcription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -48,23 +46,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.loginForm.invalid) return;
     const formValue = this.loginForm.getRawValue();
     if (!formValue.email || !formValue.password) return;
-    this.loginSubcription = this.authService
-      .login(formValue.email, formValue.password)
-      .subscribe(
-        (res) => {
-          this.router.navigate(['/dashboard'], { relativeTo: this.route });
-        },
-        (err) => {
-          console.log(err);
-          //TODO pop up error message
-        }
-      );
-  }
-
-  ngOnDestroy() {
-    if (this.loginSubcription) {
-      this.loginSubcription.unsubscribe();
-    }
+    this.authService.login(formValue.email, formValue.password).subscribe(
+      (res) => {
+        this.router.navigate(['/dashboard'], { relativeTo: this.route });
+      },
+      (err) => {
+        console.log(err);
+        //TODO pop up error message
+      }
+    );
   }
 
   togglePassword(input: HTMLInputElement) {

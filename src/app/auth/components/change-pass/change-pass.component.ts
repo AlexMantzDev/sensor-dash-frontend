@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -12,8 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription } from 'rxjs';
-
+import { customValidators } from '../../../shared/lib/custom-validators';
 @Component({
   selector: 'app-change-pass',
   standalone: true,
@@ -50,21 +48,13 @@ export class ChangePassComponent implements OnInit {
           Validators.minLength(8),
         ]),
       },
-      { validators: [this.passwordMatchValidator, this.newPasswordSame] }
+      {
+        validators: [
+          customValidators.passwordMatch,
+          customValidators.newPasswordSame,
+        ],
+      }
     );
-  }
-
-  passwordMatchValidator(control: AbstractControl) {
-    return control.get('newPassword').value ===
-      control.get('confirmPassword').value
-      ? null
-      : { passwordMismatch: true };
-  }
-
-  newPasswordSame(control: AbstractControl) {
-    return control.get('oldPassword').value !== control.get('newPassword').value
-      ? null
-      : { newPasswordSame: true };
   }
 
   onSubmit() {

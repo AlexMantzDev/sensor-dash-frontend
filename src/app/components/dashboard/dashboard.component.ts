@@ -28,9 +28,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public isAsideOpen = true;
   public deviceList = [];
   public sensorData: SensorData[] = [];
-  private sensorDataSubscription: Subscription;
-  private deviceListSubscription: Subscription;
-  private deleteSubscription: Subscription;
+  private devListSub: Subscription;
   public isSidenavOpen = false;
   public dialogInput = 'hello world';
 
@@ -41,34 +39,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.sensorDataSubscription = this.sensorDataService
-      .getAllDataByUserId()
-      .subscribe((data) => {
-        const sensorDataMap =
-          this.sensorDataService.sortSensorDataByDeviceId(data);
-        const devices = [];
-        for (let [device, sensorData] of sensorDataMap) {
-          devices.push(device);
-          this.deviceService.setDeviceList(devices);
-        }
-      });
-
-    this.deviceListSubscription = this.deviceService.deviceList.subscribe(
-      (devices) => {
-        this.deviceList = devices;
+    this.sensorDataService.getAllDataByUserId().subscribe((data) => {
+      const sensorDataMap =
+        this.sensorDataService.sortSensorDataByDeviceId(data);
+      const devices = [];
+      for (let [device, sensorData] of sensorDataMap) {
+        devices.push(device);
       }
-    );
+      this.deviceService.setDeviceList(devices);
+    });
+
+    this.devListSub = this.deviceService.deviceList.subscribe((devices) => {
+      this.deviceList = devices;
+    });
   }
 
   ngOnDestroy() {
-    if (this.sensorDataSubscription) {
-      this.sensorDataSubscription.unsubscribe();
-    }
-    if (this.deleteSubscription) {
-      this.deleteSubscription.unsubscribe();
-    }
-    if (this.deviceListSubscription) {
-      this.deviceListSubscription.unsubscribe();
+    if (this.devListSub) {
+      this.devListSub.unsubscribe();
     }
   }
 
@@ -77,15 +65,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteDevice($event) {
-    console.log($event);
     this.dialogInput = $event;
-    this.deleteSubscription = this.deviceService
-      .deleteDevice($event)
-      .subscribe((res) => {
+    this.deviceService.deleteDevice($event).subscribe(
+      (res) => {
         this.deviceService.setDeviceList(
           this.deviceList.filter((device) => device !== $event)
         );
-      });
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   toggleMenu() {

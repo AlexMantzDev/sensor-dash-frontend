@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -12,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
-import { Subscription } from 'rxjs';
+import { customValidators } from '../../../shared/lib/custom-validators';
 
 @Component({
   selector: 'app-register',
@@ -28,9 +27,8 @@ import { Subscription } from 'rxjs';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterComponent implements OnInit {
   public registerForm: FormGroup = new FormGroup({});
-  private registerSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -51,21 +49,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
           Validators.minLength(8),
         ]),
       },
-      { validators: this.passwordMatchValidator }
+      { validators: customValidators.passwordMatch }
     );
-  }
-
-  ngOnDestroy() {
-    if (this.registerSubscription) {
-      this.registerSubscription.unsubscribe();
-    }
-  }
-
-  passwordMatchValidator(control: AbstractControl) {
-    return control.get('password').value ===
-      control.get('confirmPassword').value
-      ? null
-      : { passwordMismatch: true };
   }
 
   onSubmit() {
@@ -76,20 +61,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (formValue.password !== formValue.confirmPassword) {
       return;
     }
-    this.registerSubscription = this.authService
-      .register(formValue.email, formValue.password)
-      .subscribe(
-        (res) => {
-          this.router.navigate([
-            '/validation-sent',
-            { relativeTo: this.route },
-          ]);
-        },
-        (err) => {
-          console.log(err);
-          //TODO pop up error message
-        }
-      );
+    this.authService.register(formValue.email, formValue.password).subscribe(
+      (res) => {
+        this.router.navigate(['/validation-sent', { relativeTo: this.route }]);
+      },
+      (err) => {
+        console.log(err);
+        //TODO pop up error message
+      }
+    );
   }
 
   togglePassword(input: HTMLInputElement) {

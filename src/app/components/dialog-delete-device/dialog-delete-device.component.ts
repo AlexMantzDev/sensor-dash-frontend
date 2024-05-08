@@ -1,21 +1,16 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { customValidators } from '../../shared/lib/custom-validators';
 
 @Component({
   selector: 'app-dialog-delete-device',
@@ -39,7 +34,8 @@ export class DialogDeleteDeviceComponent implements OnInit {
   };
 
   constructor(public dialogRef: MatDialogRef<DialogDeleteDeviceComponent>) {
-    this.checkDeviceIdValidator = this.checkDeviceIdValidator.bind(this);
+    customValidators.checkDeviceIdValidator =
+      customValidators.checkDeviceIdValidator.bind(this);
   }
 
   ngOnInit(): void {
@@ -47,14 +43,8 @@ export class DialogDeleteDeviceComponent implements OnInit {
       {
         deviceId: new FormControl('', [Validators.required]),
       },
-      { validators: this.checkDeviceIdValidator }
+      { validators: customValidators.checkDeviceIdValidator }
     );
-  }
-
-  checkDeviceIdValidator(control: AbstractControl) {
-    return control.get('deviceId').value !== this.deviceId
-      ? { invalidDeviceId: true }
-      : null;
   }
 
   closeDialog() {
