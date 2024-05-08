@@ -9,25 +9,29 @@ import { env } from '../../environments/environment';
 })
 export class DeviceService {
   private baseUrl = env.baseUrl;
-  private devicesSubject = new BehaviorSubject<Device[] | null>(null);
-  public deviceList = this.devicesSubject.asObservable();
+  private deviceListSubject = new BehaviorSubject<Device[] | null>(null);
+  public deviceList = this.deviceListSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  getDevices(): Observable<Device[]> {
+  public setDeviceList(devices: Device[]): void {
+    this.deviceListSubject.next(devices);
+  }
+
+  public getDevices(): Observable<Device[]> {
     return this.http
       .get<Device[]>(`${this.baseUrl}/sensor-dash/v1/devices`, {
         withCredentials: true,
       })
       .pipe(
         map((devices) => {
-          this.devicesSubject.next(devices);
+          this.deviceListSubject.next(devices);
           return devices;
         })
       );
   }
 
-  addDevice(device: Device): Observable<Device> {
+  public addDevice(device: Device): Observable<Device> {
     return this.http.post<Device>(
       `${this.baseUrl}/sensor-dash/v1/devices/add`,
       device,
@@ -35,7 +39,7 @@ export class DeviceService {
     );
   }
 
-  updateDevice(device: Device): Observable<any> {
+  public updateDevice(device: Device): Observable<any> {
     return this.http.patch<Device>(
       `${this.baseUrl}/sensor-dash/v1/devices/${device._id}`,
       device,
@@ -43,9 +47,9 @@ export class DeviceService {
     );
   }
 
-  deleteDevice(device: Device): Observable<any> {
+  public deleteDevice(deviceId: string): Observable<any> {
     return this.http.delete<Device>(
-      `${this.baseUrl}/sensor-dash/b1/devices/${device._id}`,
+      `${this.baseUrl}/sensor-dash/v1/devices/${deviceId}`,
       { withCredentials: true }
     );
   }

@@ -6,4 +6,17 @@
     display: inline-block;
     margin-left: 1em;
   }
+  &-content {
+    position: relative;
+  }
+}
+
+.settings-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  & mat-icon {
+    margin: 0;
+    padding: auto;
+  }
 }

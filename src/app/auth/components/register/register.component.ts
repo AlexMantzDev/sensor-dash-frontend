@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  viewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -92,8 +85,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
             { relativeTo: this.route },
           ]);
         },
-        (error) => {
-          console.log(error);
+        (err) => {
+          console.log(err);
           //TODO pop up error message
         }
       );

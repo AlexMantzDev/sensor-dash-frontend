@@ -27,17 +27,19 @@
       <mat-error>*Number of entries is required</mat-error>
     </mat-form-field>
     <br />
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="onSubmit()"
-      tabindex="3"
-      [disabled]="this.dummyDataForm.invalid"
-    >
-      Submit
-    </button>
-    <button mat-raised-button color="warn" (click)="closeDialog()" tabindex="4">
-      Cancel
-    </button>
+    <div class="flex flex-row justify-evenly">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onSubmit()"
+        tabindex="3"
+        [disabled]="this.dummyDataForm.invalid"
+      >
+        Submit
+      </button>
+      <button mat-raised-button color="warn" mat-dialog-close tabindex="4">
+        Cancel
+      </button>
+    </div>
   </form>
 </mat-dialog-content>

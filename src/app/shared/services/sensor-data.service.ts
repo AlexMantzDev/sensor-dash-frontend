@@ -48,7 +48,7 @@ export class SensorDataService {
     return sortedData;
   }
 
-  genDummyData(deviceId: string, numEntries: number): Observable<SensorData> {
+  genDummyData(deviceId: string, numEntries: number): Observable<any> {
     return this.http.post<SensorData>(
       `${this.baseUrl}/sensor-dash/v1/sensor-data/dummy`,
       {

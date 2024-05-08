@@ -1,4 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -9,19 +16,27 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import { SensorDataService } from '../../shared/services/sensor-data.service';
 import { env } from '../../environments/environment';
 import { SensorData } from '../../shared/models/SensorData.model';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogDeleteDeviceComponent } from '../dialog-delete-device/dialog-delete-device.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chart-card',
   standalone: true,
-  imports: [MatCardModule, BaseChartDirective],
+  imports: [MatCardModule, BaseChartDirective, MatButtonModule, MatIconModule],
   templateUrl: './chart-card.component.html',
   styleUrl: './chart-card.component.scss',
 })
-export class ChartCardComponent implements OnInit {
-  @Input() device;
+export class ChartCardComponent implements OnInit, OnDestroy {
+  @Input() device: string;
+  @Output() openDialogEvent = new EventEmitter<string>();
+  @Output() dialogInputEvent = new EventEmitter<string>();
+  private dialogSubscription: Subscription;
   private localTimezone = env.timezone;
+  private maxDataPoints = env.maxDataPoints;
   public chartData: ChartConfiguration<'line', any>['data'];
-
   public lineGraphOptions: ChartConfiguration<'line'>['options'] = {
     plugins: {
       legend: {
@@ -46,14 +61,17 @@ export class ChartCardComponent implements OnInit {
         max: 120,
         min: 30,
         title: {
-          display: true,
-          text: 'Temperature in F',
+          display: false,
+          text: '',
         },
       },
     },
   };
 
-  constructor(private sensorDataService: SensorDataService) {
+  constructor(
+    private sensorDataService: SensorDataService,
+    public dialog: MatDialog
+  ) {
     Chart.register(annotationPlugin);
     moment.tz.setDefault(this.localTimezone);
   }
@@ -61,14 +79,20 @@ export class ChartCardComponent implements OnInit {
   ngOnInit() {
     this.sensorDataService.sensorData.subscribe((data) => {
       if (data) {
-        console.log(this.device);
         const filteredData = this.filterDataDeviceId(data, this.device);
         const updatedData = this.convertDataToLocale(filteredData);
-        const temperatureData = this.filterDataTemperature(updatedData);
-        const humidityData = this.filterDataHumidity(updatedData);
+        const trimmedData = updatedData.slice(-this.maxDataPoints);
+        const temperatureData = this.filterDataTemperature(trimmedData);
+        const humidityData = this.filterDataHumidity(trimmedData);
         this.updateGraphData(temperatureData, humidityData);
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.dialogSubscription) {
+      this.dialogSubscription.unsubscribe();
+    }
   }
 
   private updateGraphData(t, h): void {
@@ -131,5 +155,17 @@ export class ChartCardComponent implements OnInit {
         timestamp: entry.data.timestamp,
       };
     });
+  }
+
+  openDeleteDialog($deviceId: string) {
+    this.openDialogEvent.emit($deviceId);
+    const dialogRef = this.dialog.open(DialogDeleteDeviceComponent, {
+      data: { deviceId: $deviceId },
+    });
+    this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
+      this.dialogInputEvent.emit(result);
+    });
+
+    dialogRef.componentInstance.deviceId = $deviceId;
   }
 }

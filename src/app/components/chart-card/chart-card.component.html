@@ -1,15 +1,25 @@
-<mat-card class="m-4 p-8 min-w-max card">
-  <div>
-    <h2>Device Id:</h2>
-    <p>{{ device }}</p>
-  </div>
+<mat-card class="m-4 p-8 min-w-max card"
+  ><div class="card-content">
+    <button
+      mat-raised-button
+      color="warn"
+      class="settings-btn"
+      (click)="openDeleteDialog(device)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+    <div>
+      <h2>Device Id:</h2>
+      <p>{{ device }}</p>
+    </div>
 
-  <h2>Temperature</h2>
-  <canvas
-    height="200"
-    baseChart
-    [data]="chartData"
-    [options]="lineGraphOptions"
-    [type]="'line'"
-  ></canvas>
+    <h2>Temperature</h2>
+    <canvas
+      class="h-full w-full"
+      baseChart
+      [data]="chartData"
+      [options]="lineGraphOptions"
+      [type]="'line'"
+    ></canvas>
+  </div>
 </mat-card>

@@ -29,7 +29,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public deviceList = [];
   public sensorData: SensorData[] = [];
   private sensorDataSubscription: Subscription;
+  private deviceListSubscription: Subscription;
+  private deleteSubscription: Subscription;
   public isSidenavOpen = false;
+  public dialogInput = 'hello world';
 
   constructor(
     public deviceService: DeviceService,
@@ -43,20 +46,46 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         const sensorDataMap =
           this.sensorDataService.sortSensorDataByDeviceId(data);
+        const devices = [];
         for (let [device, sensorData] of sensorDataMap) {
-          this.deviceList.push(device);
+          devices.push(device);
+          this.deviceService.setDeviceList(devices);
         }
       });
+
+    this.deviceListSubscription = this.deviceService.deviceList.subscribe(
+      (devices) => {
+        this.deviceList = devices;
+      }
+    );
   }
 
   ngOnDestroy() {
     if (this.sensorDataSubscription) {
       this.sensorDataSubscription.unsubscribe();
     }
+    if (this.deleteSubscription) {
+      this.deleteSubscription.unsubscribe();
+    }
+    if (this.deviceListSubscription) {
+      this.deviceListSubscription.unsubscribe();
+    }
   }
 
   openDialog() {
     this.dialog.open(DialogDummyDataComponent);
+  }
+
+  deleteDevice($event) {
+    console.log($event);
+    this.dialogInput = $event;
+    this.deleteSubscription = this.deviceService
+      .deleteDevice($event)
+      .subscribe((res) => {
+        this.deviceService.setDeviceList(
+          this.deviceList.filter((device) => device !== $event)
+        );
+      });
   }
 
   toggleMenu() {
