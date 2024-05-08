@@ -1,24 +1,24 @@
 <mat-dialog-content>
   <div class="flex flex-col items-center">
     <h1 mat-dialog-title>Delete Device</h1>
-    <h2>{{ this.data.deviceId }}</h2>
     <p>
-      Device id: <span class="text-red-400">{{ this.deviceId }}</span>
+      Device serial number:
+      <span class="text-red-400">{{ this.data.serialNo }}</span>
     </p>
-    <p>Please enter the Device Id to confirm.</p>
+    <p>Please enter the device serial number to confirm.</p>
     <form [formGroup]="deleteDeviceForm" (ngSubmit)="onSubmit()">
       <mat-form-field>
         <input
           matInput
-          placeholder="Device Id"
-          formControlName="deviceId"
-          id="deviceId"
-          name="deviceId"
+          placeholder="Device Serial Number"
+          formControlName="devSerialNo"
+          id="devSerialNo"
+          name="devSerialNo"
           required
           autofocus
           tabindex="1"
         />
-        <mat-error>*Device Id is required</mat-error>
+        <mat-error>*Device serial number is required</mat-error>
       </mat-form-field>
       <div class="flex flex-row justify-evenly w-full">
         <button mat-button mat-dialog-close type="button" tabindex="2">

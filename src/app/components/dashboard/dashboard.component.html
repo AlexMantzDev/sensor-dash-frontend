@@ -22,16 +22,11 @@
   }
   <main>
     <div class="m-4">
-      <h2>{{ this.dialogInput }}</h2>
       <h2>Sensors</h2>
     </div>
     <section class="text-black">
       @for (device of this.deviceList; track $index) {
-      <app-chart-card
-        class="card"
-        (dialogInputEvent)="deleteDevice($event)"
-        [device]="device"
-      ></app-chart-card>
+      <app-chart-card class="card" [device]="device"></app-chart-card>
       }
     </section>
   </main>

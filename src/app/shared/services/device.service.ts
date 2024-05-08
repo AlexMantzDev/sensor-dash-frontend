@@ -47,9 +47,16 @@ export class DeviceService {
     );
   }
 
-  public deleteDevice(deviceId: string): Observable<any> {
+  public deleteDevice(serialNo: string): Observable<any> {
     return this.http.delete<Device>(
-      `${this.baseUrl}/sensor-dash/v1/devices/${deviceId}`,
+      `${this.baseUrl}/sensor-dash/v1/devices/${serialNo}`,
+      { withCredentials: true }
+    );
+  }
+
+  public getDeviceBySerialNo(serialNo: string): Observable<Device> {
+    return this.http.get<Device>(
+      `${this.baseUrl}/sensor-dash/v1/devices/serial/${serialNo}`,
       { withCredentials: true }
     );
   }

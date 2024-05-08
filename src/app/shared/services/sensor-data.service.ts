@@ -18,7 +18,7 @@ export class SensorDataService {
 
   constructor(private http: HttpClient) {}
 
-  getAllDataByUserId(): Observable<SensorData[]> {
+  getAllData(): Observable<SensorData[]> {
     return this.http
       .get<any>(`${this.baseUrl}/sensor-dash/v1/sensor-data/`, {
         withCredentials: true,
@@ -48,11 +48,11 @@ export class SensorDataService {
     return sortedData;
   }
 
-  genDummyData(deviceId: string, numEntries: number): Observable<any> {
+  genDummyData(serialNo: string, numEntries: number): Observable<any> {
     return this.http.post<SensorData>(
       `${this.baseUrl}/sensor-dash/v1/sensor-data/dummy`,
       {
-        deviceId,
+        serialNo,
         numEntries,
       },
       { withCredentials: true }

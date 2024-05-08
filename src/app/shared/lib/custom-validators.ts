@@ -12,9 +12,9 @@ export const customValidators = {
       ? null
       : { newPasswordSame: true };
   },
-  checkDeviceIdValidator(control: AbstractControl) {
-    return control.get('deviceId').value !== this.deviceId
-      ? { invalidDeviceId: true }
-      : null;
+  checkDeviceSerialNo(control: AbstractControl) {
+    return control.get('devSerialNo').value === this.data.serialNo
+      ? null
+      : { invalidDevSerialNo: true };
   },
 };

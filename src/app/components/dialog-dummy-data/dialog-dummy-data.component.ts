@@ -42,19 +42,19 @@ export class DialogDummyDataComponent implements OnInit {
 
   ngOnInit() {
     this.dummyDataForm = new FormGroup({
-      deviceId: new FormControl('', [Validators.required]),
+      serialNo: new FormControl('', [Validators.required]),
       numEntries: new FormControl('10', [Validators.required]),
     });
   }
 
   onSubmit() {
     if (this.dummyDataForm.invalid) return;
-    const deviceId = this.dummyDataForm.get('deviceId')?.value;
+    const serialNo = this.dummyDataForm.get('serialNo')?.value;
     const numEntries = this.dummyDataForm.get('numEntries')?.value;
     this.sensorDataService
-      .genDummyData(deviceId, numEntries)
+      .genDummyData(serialNo, numEntries)
       .subscribe((res) => {
-        this.sensorDataService.getAllDataByUserId().subscribe((data) => {
+        this.sensorDataService.getAllData().subscribe((data) => {
           const sensorDataMap =
             this.sensorDataService.sortSensorDataByDeviceId(data);
           const devices = [];

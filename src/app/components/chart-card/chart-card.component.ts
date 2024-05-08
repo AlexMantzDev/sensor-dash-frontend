@@ -78,7 +78,7 @@ export class ChartCardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sensorDataSub = this.sensorDataService.sensorData.subscribe((data) => {
       if (data) {
-        const filteredData = this.filterDataDeviceId(data, this.device);
+        const filteredData = this.filterDataDeviceSerialNo(data, this.device);
         const updatedData = this.convertDataToLocale(filteredData);
         const trimmedData = updatedData.slice(-env.maxDataPoints);
         const temperatureData = this.filterDataTemperature(trimmedData);
@@ -137,8 +137,8 @@ export class ChartCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  filterDataDeviceId(data: SensorData[], deviceId: string) {
-    return data.filter((entry) => entry.device === deviceId);
+  filterDataDeviceSerialNo(data: SensorData[], deviceSerialNo: string) {
+    return data.filter((entry) => entry.device === deviceSerialNo);
   }
 
   filterDataTemperature(data: SensorData[]) {
@@ -159,15 +159,10 @@ export class ChartCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDeleteDialog($deviceId: string) {
-    this.openDialogEvent.emit($deviceId);
-    const dialogRef = this.dialog.open(DialogDeleteDeviceComponent, {
-      data: { deviceId: $deviceId },
+  openDeleteDialog(serialNo: string) {
+    this.openDialogEvent.emit(serialNo);
+    this.dialog.open(DialogDeleteDeviceComponent, {
+      data: { serialNo },
     });
-    this.deleteDialogSub = dialogRef.afterClosed().subscribe((result) => {
-      this.dialogInputEvent.emit(result);
-    });
-
-    dialogRef.componentInstance.deviceId = $deviceId;
   }
 }
