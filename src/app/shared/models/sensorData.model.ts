@@ -1,4 +1,9 @@
 export interface SensorData {
-  time: string;
-  temperature: number;
+  _id: string;
+  data: {
+    timestamp: string;
+    temperature: number;
+    humidity: number;
+  };
+  device: string;
 }

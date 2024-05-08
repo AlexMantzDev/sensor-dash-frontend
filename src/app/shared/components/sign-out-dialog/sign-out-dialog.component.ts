@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../../../auth/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ export class SignOutDialogComponent implements OnDestroy {
   private logoutSubscription: Subscription;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     public dialogRef: MatDialogRef<SignOutDialogComponent>,
     private router: Router,
     private route: ActivatedRoute

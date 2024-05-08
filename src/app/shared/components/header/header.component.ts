@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { SignOutDialogComponent } from '../../../auth/components/sign-out-dialog/sign-out-dialog.component';
+import { SignOutDialogComponent } from '../sign-out-dialog/sign-out-dialog.component';
 import { User } from '../../models/User.model';
 import { Subscription } from 'rxjs';
 

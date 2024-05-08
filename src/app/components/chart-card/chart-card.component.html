@@ -1,14 +1,14 @@
 <mat-card class="m-4 p-8 min-w-max card">
   <div>
     <h2>Device Id:</h2>
-    <p>{{ device["_id"] }}</p>
+    <p>{{ device }}</p>
   </div>
 
   <h2>Temperature</h2>
   <canvas
     height="200"
     baseChart
-    [data]="lineGraphData"
+    [data]="chartData"
     [options]="lineGraphOptions"
     [type]="'line'"
   ></canvas>

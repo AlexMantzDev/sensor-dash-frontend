@@ -8,6 +8,7 @@ import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { SensorDataService } from '../../shared/services/sensor-data.service';
 import { env } from '../../environments/environment';
+import { SensorData } from '../../shared/models/SensorData.model';
 
 @Component({
   selector: 'app-chart-card',
@@ -17,41 +18,14 @@ import { env } from '../../environments/environment';
   styleUrl: './chart-card.component.scss',
 })
 export class ChartCardComponent implements OnInit {
-  @Input() device = {};
-
-  private localizedData: { time: string; temperature: number }[] = [];
+  @Input() device;
   private localTimezone = env.timezone;
-
-  public lineGraphData: ChartConfiguration<
-    'line',
-    { time: string; temperature: number }[]
-  >['data'] = {
-    datasets: [
-      {
-        data: this.localizedData,
-        parsing: {
-          xAxisKey: 'time',
-          yAxisKey: 'temperature',
-        },
-      },
-    ],
-  };
+  public chartData: ChartConfiguration<'line', any>['data'];
 
   public lineGraphOptions: ChartConfiguration<'line'>['options'] = {
     plugins: {
       legend: {
-        display: false,
-      },
-      annotation: {
-        annotations: [
-          {
-            type: 'line',
-            borderColor: 'rgba(255, 99, 132, 0.5)',
-            borderWidth: 2,
-            scaleID: 'x',
-            value: '2024-05-01T00:00:00-05:00',
-          },
-        ],
+        display: true,
       },
     },
     responsive: false,
@@ -85,18 +59,76 @@ export class ChartCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    const newData = this.convertDataToLocale(this.sensorDataService.data);
-    this.localizedData = [...newData];
-    this.lineGraphData.datasets[0].data = this.localizedData;
+    this.sensorDataService.sensorData.subscribe((data) => {
+      if (data) {
+        console.log(this.device);
+        const filteredData = this.filterDataDeviceId(data, this.device);
+        const updatedData = this.convertDataToLocale(filteredData);
+        const temperatureData = this.filterDataTemperature(updatedData);
+        const humidityData = this.filterDataHumidity(updatedData);
+        this.updateGraphData(temperatureData, humidityData);
+      }
+    });
   }
 
-  convertDataToLocale(
-    data: { time: string; temperature: number }[]
-  ): { time: string; temperature: number }[] {
-    return data.map((item) => {
+  private updateGraphData(t, h): void {
+    const data: ChartConfiguration<'line', any>['data'] = {
+      datasets: [
+        {
+          label: 'Temperature',
+          data: t,
+          parsing: {
+            xAxisKey: 'timestamp',
+            yAxisKey: 'temperature',
+          },
+        },
+        {
+          label: 'Humidity',
+          data: h,
+          parsing: {
+            xAxisKey: 'timestamp',
+            yAxisKey: 'humidity',
+          },
+        },
+      ],
+    };
+    this.chartData = data;
+  }
+
+  convertDataToLocale(dataList: SensorData[]): any {
+    return dataList.map((dataEntry) => {
+      const local = moment
+        .utc(Number(dataEntry.data.timestamp))
+        .local()
+        .format();
       return {
-        ...item,
-        time: moment(Number(item.time) * 1000).format(),
+        ...dataEntry,
+        data: {
+          ...dataEntry.data,
+          timestamp: local,
+        },
+      };
+    });
+  }
+
+  filterDataDeviceId(data: SensorData[], deviceId: string) {
+    return data.filter((entry) => entry.device === deviceId);
+  }
+
+  filterDataTemperature(data: SensorData[]) {
+    return data.map((entry) => {
+      return {
+        temperature: entry.data.temperature,
+        timestamp: entry.data.timestamp,
+      };
+    });
+  }
+
+  filterDataHumidity(data: SensorData[]) {
+    return data.map((entry) => {
+      return {
+        humidity: entry.data.humidity,
+        timestamp: entry.data.timestamp,
       };
     });
   }

@@ -1,0 +1,43 @@
+<mat-dialog-content>
+  <form [formGroup]="dummyDataForm">
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Device Id"
+        formControlName="deviceId"
+        id="deviceId"
+        name="deviceId"
+        required
+        autofocus
+        tabindex="1"
+      />
+      <mat-error>*Device Id is required</mat-error>
+    </mat-form-field>
+    <br />
+    <mat-form-field>
+      <input
+        type="number"
+        matInput
+        formControlName="numEntries"
+        id="numEntries"
+        name="numEntries"
+        required
+        tabindex="2"
+      />
+      <mat-error>*Number of entries is required</mat-error>
+    </mat-form-field>
+    <br />
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      tabindex="3"
+      [disabled]="this.dummyDataForm.invalid"
+    >
+      Submit
+    </button>
+    <button mat-raised-button color="warn" (click)="closeDialog()" tabindex="4">
+      Cancel
+    </button>
+  </form>
+</mat-dialog-content>

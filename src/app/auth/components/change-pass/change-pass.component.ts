@@ -45,7 +45,10 @@ export class ChangePassComponent implements OnInit {
           Validators.required,
           Validators.minLength(8),
         ]),
-        confirmPassword: new FormControl('', [Validators.required]),
+        confirmPassword: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+        ]),
       },
       { validators: [this.passwordMatchValidator, this.newPasswordSame] }
     );

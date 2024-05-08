@@ -47,7 +47,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           Validators.required,
           Validators.minLength(8),
         ]),
-        confirmPassword: new FormControl('', [Validators.required]),
+        confirmPassword: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+        ]),
       },
       { validators: this.passwordMatchValidator }
     );

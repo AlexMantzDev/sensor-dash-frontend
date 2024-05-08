@@ -9,6 +9,10 @@ import { ChartCardComponent } from '../chart-card/chart-card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { DeviceService } from '../../shared/services/device.service';
 import { Subscription } from 'rxjs';
+import { DialogDummyDataComponent } from '../dialog-dummy-data/dialog-dummy-data.component';
+import { MatDialog } from '@angular/material/dialog';
+import { SensorDataService } from '../../shared/services/sensor-data.service';
+import { SensorData } from '../../shared/models/SensorData.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,23 +26,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('filter') filter: ElementRef;
   @ViewChild('sidenavContent') sidenavContent: ElementRef;
   public isAsideOpen = true;
-  public devices = [];
-  private devicesListSubscription: Subscription;
+  public deviceList = [];
+  public sensorData: SensorData[] = [];
+  private sensorDataSubscription: Subscription;
   public isSidenavOpen = false;
 
+  constructor(
+    public deviceService: DeviceService,
+    public sensorDataService: SensorDataService,
+    public dialog: MatDialog
+  ) {}
+
   ngOnInit() {
-    this.devicesListSubscription = this.deviceService.devicesList.subscribe(
-      (devices) => [(this.devices = devices)]
-    );
+    this.sensorDataSubscription = this.sensorDataService
+      .getAllDataByUserId()
+      .subscribe((data) => {
+        const sensorDataMap =
+          this.sensorDataService.sortSensorDataByDeviceId(data);
+        for (let [device, sensorData] of sensorDataMap) {
+          this.deviceList.push(device);
+        }
+      });
   }
 
   ngOnDestroy() {
-    if (this.devicesListSubscription) {
-      this.devicesListSubscription.unsubscribe();
+    if (this.sensorDataSubscription) {
+      this.sensorDataSubscription.unsubscribe();
     }
   }
 
-  constructor(public deviceService: DeviceService) {}
+  openDialog() {
+    this.dialog.open(DialogDummyDataComponent);
+  }
 
   toggleMenu() {
     if (!this.isSidenavOpen) {

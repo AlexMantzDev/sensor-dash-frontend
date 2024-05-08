@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { SensorData } from '../models/SensorData.model';
 import { env } from '../../environments/environment';
 import { Device } from '../models/Device.model';
@@ -10,34 +10,52 @@ import { Device } from '../models/Device.model';
 })
 export class SensorDataService {
   private baseUrl = env.baseUrl;
-  private sensorDataSubject = new BehaviorSubject<SensorData | undefined>(
+  private sensorDataSubject = new BehaviorSubject<SensorData[] | undefined>(
     undefined
   );
-  private sensorData = this.sensorDataSubject.asObservable();
-
-  public data = [
-    { time: '1714539600', temperature: 75 },
-    { time: '1714543200', temperature: 75 },
-    { time: '1714546800', temperature: 75 },
-    { time: '1714550400', temperature: 75 },
-    { time: '1714554000', temperature: 75 },
-    { time: '1714557600', temperature: 75 },
-    { time: '1714561200', temperature: 75 },
-    { time: '1714564800', temperature: 75 },
-    { time: '1714568400', temperature: 75 },
-    { time: '1714572000', temperature: 75 },
-    { time: '1714575600', temperature: 75 },
-    { time: '1714579200', temperature: 75 },
-    { time: '1714582800', temperature: 75 },
-  ];
+  public sensorData: Observable<SensorData[]> =
+    this.sensorDataSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  loadTemperature(device: Device) {
-    this.http.get<SensorData[]>(`${this.baseUrl}/api/v1/sensor-data`, {
-      params: { deviceId: device._id },
-    });
+  getAllDataByUserId(): Observable<SensorData[]> {
+    return this.http
+      .get<any>(`${this.baseUrl}/sensor-dash/v1/sensor-data/`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((obj) => {
+          const data = obj.data;
+          this.sensorDataSubject.next(data);
+          return data;
+        })
+      );
   }
 
-  loadHumidity() {}
+  // getAllDataByDeviceId(deviceId: string): Observable<SensorData[]> {}
+
+  sortSensorDataByDeviceId(
+    sensorData: SensorData[]
+  ): Map<string, SensorData[]> {
+    const sortedData = new Map<string, SensorData[]>();
+    sensorData.forEach((data) => {
+      if (sortedData.has(data.device)) {
+        sortedData.get(data.device)?.push(data);
+      } else {
+        sortedData.set(data.device, [data]);
+      }
+    });
+    return sortedData;
+  }
+
+  genDummyData(deviceId: string, numEntries: number): Observable<SensorData> {
+    return this.http.post<SensorData>(
+      `${this.baseUrl}/sensor-dash/v1/sensor-data/dummy`,
+      {
+        deviceId,
+        numEntries,
+      },
+      { withCredentials: true }
+    );
+  }
 }
