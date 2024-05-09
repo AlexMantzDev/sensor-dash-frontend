@@ -1,77 +1,11 @@
-$transition-time: 0.2s;
-$number-of-buttons: 5;
-
 :host {
   display: flex;
   flex-grow: 1;
-}
-
-.sidenav {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  width: 54px;
-  transition: width $transition-time;
-
-  &-hidden li {
-    opacity: 0;
-    transform: translateX(-100%);
-    transition: opacity, transform $transition-time ease;
-  }
-
-  &-visible li {
-    opacity: 1;
-    transform: translateX(0);
-    transition-property: opacity, transform;
-    transition-duration: $transition-time;
-    transition-timing-function: ease;
-    @for $i from 1 through $number-of-buttons {
-      &:nth-child(#{$i}) {
-        transition-delay: calc(($transition-time / $number-of-buttons) * $i);
-      }
-    }
-  }
-
-  &-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-
-    & li {
-      padding: 0.5rem;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    & li:hover {
-      background-color: hsla(0, 0%, 0%, 0.1);
-    }
-  }
-
-  &-btn {
-    width: 54px;
-    height: 54px;
-    padding: auto;
-  }
 }
 
 main {
   flex-grow: 1;
   margin-left: 256px;
   margin-right: 256px;
-}
-
-.filter {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  background-color: hsla(0, 0%, 0%, 0.8);
-  transition: background-color $transition-time;
+  margin-bottom: 256px;
 }

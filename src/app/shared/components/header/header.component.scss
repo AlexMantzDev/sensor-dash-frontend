@@ -39,7 +39,10 @@ $number-of-buttons: 3;
   flex-direction: row-reverse;
   height: 100%;
   & li {
-    padding: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    display: grid;
+    place-items: center;
   }
 
   & li:hover {

@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './auth/components/login/login.component';
-import { filter } from 'rxjs';
+import { FooterComponent } from './shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-root',

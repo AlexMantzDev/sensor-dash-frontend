@@ -9,15 +9,22 @@ import { ChartCardComponent } from '../chart-card/chart-card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { DeviceService } from '../../shared/services/device.service';
 import { Subscription } from 'rxjs';
-import { DialogDummyDataComponent } from '../dialog-dummy-data/dialog-dummy-data.component';
-import { MatDialog } from '@angular/material/dialog';
 import { SensorDataService } from '../../shared/services/sensor-data.service';
 import { SensorData } from '../../shared/models/SensorData.model';
+import { RouterModule } from '@angular/router';
+import { SidenavComponent } from '../../shared/components/sidenav/sidenav.component';
+import { FooterComponent } from '../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ChartCardComponent, MatIconModule],
+  imports: [
+    ChartCardComponent,
+    MatIconModule,
+    RouterModule,
+    SidenavComponent,
+    FooterComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -26,16 +33,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('filter') filter: ElementRef;
   @ViewChild('sidenavContent') sidenavContent: ElementRef;
 
-  public isAsideOpen = true;
   public deviceList = [];
   public sensorData: SensorData[] = [];
   private devListSub: Subscription;
-  public isSidenavOpen = false;
 
   constructor(
     public deviceService: DeviceService,
-    public sensorDataService: SensorDataService,
-    public dialog: MatDialog
+    public sensorDataService: SensorDataService
   ) {}
 
   ngOnInit() {
@@ -57,24 +61,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.devListSub) {
       this.devListSub.unsubscribe();
-    }
-  }
-
-  openDialog() {
-    this.dialog.open(DialogDummyDataComponent);
-  }
-
-  toggleMenu() {
-    if (!this.isSidenavOpen) {
-      this.isSidenavOpen = true;
-      this.sidenav.nativeElement.style.width = '254px';
-      this.sidenavContent.nativeElement.classList.add('sidenav-visible');
-      this.sidenavContent.nativeElement.classList.remove('sidenav-hidden');
-    } else {
-      this.isSidenavOpen = false;
-      this.sidenav.nativeElement.style.width = '54px';
-      this.sidenavContent.nativeElement.classList.add('sidenav-hidden');
-      this.sidenavContent.nativeElement.classList.remove('sidenav-visible');
     }
   }
 }

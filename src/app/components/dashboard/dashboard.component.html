@@ -1,25 +1,5 @@
 <div class="relative h-full w-full dark:bg-zinc-800 dark:text-zinc-100">
-  <aside class="sidenav bg-zinc-700" #sidenav>
-    <button mat-button class="sidenav-btn" type="button" (click)="toggleMenu()">
-      @if(this.isSidenavOpen) {
-      <mat-icon>chevron_left</mat-icon>
-      } @else {
-      <mat-icon>chevron_right</mat-icon>
-      }
-    </button>
-    <div class="sidenav-content sidenav-hidden" #sidenavContent>
-      <ul>
-        <li (click)="openDialog()">Create Dummy Data</li>
-        <li>thing</li>
-        <li>thing</li>
-        <li>thing</li>
-        <li>thing</li>
-      </ul>
-    </div>
-  </aside>
-  @if(this.isSidenavOpen){
-  <div #filter class="filter" (click)="toggleMenu()"></div>
-  }
+  <app-sidenav></app-sidenav>
   <main>
     <div class="m-4">
       <h2>Sensors</h2>
@@ -30,4 +10,5 @@
       }
     </section>
   </main>
+  <app-footer></app-footer>
 </div>

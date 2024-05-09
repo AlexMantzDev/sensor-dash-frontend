@@ -1,0 +1,21 @@
+<aside class="sidenav bg-zinc-700" #sidenav>
+  <button mat-button class="sidenav-btn" type="button" (click)="toggleMenu()">
+    @if(this.isSidenavOpen) {
+    <mat-icon>chevron_left</mat-icon>
+    } @else {
+    <mat-icon>chevron_right</mat-icon>
+    }
+  </button>
+  <div class="sidenav-content sidenav-hidden" #sidenavContent>
+    <ul>
+      <li (click)="openDialog()">Create Dummy Data</li>
+      <li>thing</li>
+      <li>thing</li>
+      <li>thing</li>
+      <li>thing</li>
+    </ul>
+  </div>
+</aside>
+@if(this.isSidenavOpen){
+<div #filter class="filter" (click)="toggleMenu()"></div>
+}
